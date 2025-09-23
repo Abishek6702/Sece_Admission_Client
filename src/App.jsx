@@ -6,6 +6,11 @@ import LoginPage from "./pages/LoginPage";
 import EnquiryForm from "./pages/EnquiryForm";
 import EnquiryThankYou from "./pages/EnquiryThankYou"
 import AdminDashboard from "./pages/AdminDashboard";
+import ApplicationForm from "./pages/ApplicationForm";
+import ApplicationThankYou from "./pages/ApplicationThankYou";
+import Text from "./pages/Text";
+import StudentDashboard from "./pages/StudentDashboard";
+
 function App() {
   return (
     <>
@@ -15,7 +20,12 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/enquiry" element={<EnquiryForm/>}/>
         <Route path="/enquiry-thank-you" element={<EnquiryThankYou/>}/>
-        <Route path="/admin/*" element={<AdminDashboard/>}/>
+        <Route path="/application-thank-you" element={<ApplicationThankYou/>}/>
+
+        <Route path="/admin/*" element={<ProtectedRoute><AdminDashboard/></ProtectedRoute>}/>
+        <Route path="/application" element={<ApplicationForm/>}/>
+        <Route path="/text" element={<Text/>}/>
+        <Route path="/dashboard" element={<StudentDashboard/>}/>
 
         {/* Protected Routes */}
         {/* sample setup <Route path="/..." element={<ProtectedRoute><Component name/><ProtectedRoute>}/> */}

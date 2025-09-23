@@ -33,9 +33,9 @@ export default function Login() {
       if (role.toLowerCase() === "admin") {
         navigate("/admin");
       } else if (role.toLowerCase() === "student") {
-        if (firstTimeLogin === false) {
+        if (firstTimeLogin === true) {
           navigate("/application");
-        } else if (firstTimeLogin === true) {
+        } else if (firstTimeLogin === false) {
           navigate("/dashboard");
         } else {
           navigate("/");

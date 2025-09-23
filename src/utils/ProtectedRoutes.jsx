@@ -1,6 +1,6 @@
-import React, { Children } from "react";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 function isTokenValid() {
   const token = localStorage.getItem("token");
@@ -19,11 +19,11 @@ function isTokenValid() {
   }
 }
 
-const ProtectedRoute = ({ Children }) => {
+const ProtectedRoute = ({ children }) => {
   if (!isTokenValid()) {
     return <Navigate to="/" replace />;
   }
-  return Children;
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;

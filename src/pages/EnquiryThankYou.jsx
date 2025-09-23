@@ -3,7 +3,7 @@ import thank from "../assets/thank.svg";
 const EnquiryThankYou = () => {
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center md:min-h-screen">
         <div className=" w-[90%] h-[90vh]  md:flex items-center">
           <div className=" imgae-container  md:w-[50%] h-full flex items-center justify-center ">
             <img src={thank} alt="" className="md:w-[75%] m-auto" />

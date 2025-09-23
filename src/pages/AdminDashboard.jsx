@@ -6,6 +6,7 @@ import Dashboard from "../components/admin/Dashboard";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import EnquiryDeatil from "../components/admin/EnquiryDeatil";
 import FinalizedEnquiries from "../components/admin/FinalizedEnquiries";
+import ApplicationDetail from "../components/admin/ApplicationDetail";
 
 const TABS = {
   DASHBOARD: "dashboard",
@@ -43,6 +44,7 @@ const AdminDashboard = () => {
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="enquiry_list/:id" element={<EnquiryDeatil/>} />
             <Route path="finalized_enquiries" element={<FinalizedEnquiries/>}/>
+            <Route path="application_list/:id" element={<ApplicationDetail/>}/>
           </Routes>
         </div>
       </main>

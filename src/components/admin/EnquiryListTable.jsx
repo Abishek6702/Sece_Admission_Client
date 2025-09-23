@@ -796,6 +796,8 @@ export default function CourseTable() {
                     className={`px-2 py-1 rounded-full text-xs font-medium
       ${row.status === "Selected" ? "bg-green-100 text-green-700" : ""}
       ${row.status === "Pending" ? "bg-yellow-100 text-yellow-700" : ""}
+      ${row.status === "UserCreated" ? "bg-blue-100 text-blue-700" : ""}
+
       ${row.status === "Rejected" ? "bg-red-100 text-red-700" : ""}`}
                   >
                     {row.status}
