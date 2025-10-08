@@ -8,7 +8,7 @@ const AdditionalInformationStep = ({ data = {}, errors = {}, onChange = () => {}
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">Quota <span className="text-red-600">*</span></label>
         <select
-          value={data.quota || ""}
+          value={data.Quota || ""}
           onChange={(e) => onChange("quota", e.target.value)}
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
         >

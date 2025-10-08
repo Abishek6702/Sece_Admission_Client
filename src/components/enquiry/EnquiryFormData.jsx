@@ -92,7 +92,6 @@ function validate(data,step){
 //       errors.studentMobile =
 //         "Enter a valid 10-digit mobile number (not starting with 0)";
 //     }
-//    
 
 //     if (!data.fatherMobile) {
 //       errors.fatherMobile = "Father Mobile required";
@@ -100,7 +99,7 @@ function validate(data,step){
 //       errors.fatherMobile =
 //         "Enter a valid 10-digit mobile number (not starting with 0)";
 //     }
-//    
+
 //     if (!data.motherMobile) {
 //       errors.motherMobile = "Mother Mobile required";
 //     } else if (!mobileRegex.test(data.motherMobile)) {
@@ -218,18 +217,21 @@ export default function EnquiryFormData() {
         try {
           setLoading(true);
 
-          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          const responseData =await res.json();
+          const res = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/enquiries`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }
+          );
+          const responseData = await res.json();
 
-          if (!res.ok) throw new Error(responseData.message||"Failed to submit enquiry");
-          
-         
+          if (!res.ok)
+            throw new Error(responseData.message || "Failed to submit enquiry");
+
           toast.success("Enquiry submitted successfully!");
-          console.log(responseData.pdfUrl)
+          console.log(responseData.pdfUrl);
           navigate("/enquiry-thank-you");
         } catch (err) {
           console.log(err.message);

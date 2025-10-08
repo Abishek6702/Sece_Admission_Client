@@ -1,7 +1,7 @@
 
 import React from 'react'
 import logo from "../../assets/sece-logo.svg";
-import illustrate from "../../assets/illustrate.svg";
+import illustrate from "../../assets/application-img.svg";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 export const ApplicationSidebar = () => {
   return (
@@ -17,7 +17,7 @@ export const ApplicationSidebar = () => {
               Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vitae
               voluptas non neque est,
             </p>
-            <img src={illustrate} alt="" className="mt-8" />
+            <img src={illustrate} alt="" className="mt-8 w-60" />
           </div>
           <div className="mt-4 absolute bottom-6 p-2 w-[70%]">
             <div className="social-media flex justify-evenly text-white p-2">

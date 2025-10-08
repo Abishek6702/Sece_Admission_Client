@@ -17,7 +17,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     toast.info("Logout successfully", { position: "top-right" });
-    navigate("/");
+    navigate("/login");
   };
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,9 +25,17 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
     { id: "enquiry_list", label: "Enquiry List", Icon: ClipboardList },
-    { id: "finalized_enquiries", label: "Finalized Enquiries", Icon: FileCheck},
+    {
+      id: "finalized_enquiries",
+      label: "Finalized Enquiries",
+      Icon: FileCheck,
+    },
     { id: "application_list", label: "Application List", Icon: FileText },
-
+    // {
+    //   id: "finalized_applications",
+    //   label: "Finalized Applications",
+    //   Icon: FileCheck,
+    // },
   ];
 
   const handleTabClick = (id) => {
@@ -150,7 +158,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
                     )}
                     <Icon size={24} className="flex-shrink-0 " />
                     {(!collapsed || mobileOpen) && (
-                      <span className="ml-1">{label}</span>
+                      <span className="ml-1 truncate">{label}</span>
                     )}
                   </button>
                 </Tooltip>

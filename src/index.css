@@ -92,3 +92,13 @@ animation: l27-1 1.5s infinite;
 30%,70% {transform: rotate(calc(var(--s,1)*120deg)) translate(calc(var(--s,1)*-5px),10px)}
 100%{transform: rotate(calc(var(--s,1)*120deg)) translate(0)}
 }
+html {
+  scroll-behavior: smooth;
+}
+
+.bg-login {
+  background-image: url('/src/assets/Union.svg'), url('/src/assets/Vector.svg');
+  background-repeat: no-repeat, no-repeat;
+  background-position: left top, right bottom; /* adjust as needed */
+  background-size: contain, contain; /* or cover if you want them stretched */
+}

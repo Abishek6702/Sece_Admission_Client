@@ -130,222 +130,222 @@ const initialData = {
   declarationForm: "",
   physicalFitnessForm: "",
 };
-// function validate(data, step) {
-//   return {}; // skip all validation for now
-// }
-
 function validate(data, step) {
-  const errors = {};
-  const mobileRegex = /^[1-9][0-9]{9}$/;
-  //personal details step
-  if (step === 0) {
-    if (!data.studentName) errors.studentName = "Name is required";
-    if (!data.gender) errors.gender = "Gender is required";
-    if (!data.dob) errors.dob = "Date of birth is required";
-    if (!data.community) errors.community = "Community is required";
-    if (!data.casteName) errors.casteName = "CasteName is required";
-    if (!data.communityCertificateNo)
-      errors.communityCertificateNo =
-        "Community certificate number is required";
-    if (!data.motherTongue) errors.motherTongue = "Mother tounge is important";
-    if (!data.religion) errors.religion = "Religion is required";
-    if (!data.nationality) errors.nationality = "Nationality is required";
-    if (!data.bloodGroup) errors.bloodGroup = "Blood Group is required";
-    if (!data.aadharNo) errors.aadharNo = "Aadhaar number is important";
-  }
-  // personal contact details
-  if (step === 1) {
-    if (!data.permanentAddress.doorNo)
-      errors.permanentdoorNo = "Door No required";
-    if (!data.permanentAddress.street)
-      errors.permanentstreet = "Street required";
-    if (!data.permanentAddress.taluk) errors.permanenttaluk = "Taluk required";
-    if (!data.permanentAddress.district)
-      errors.permanentdistrict = "District required";
-    if (!data.permanentAddress.state) errors.permanentstate = "State required";
-    if (!data.permanentAddress.pincode)
-      errors.permanentpincode = "Pincode required";
-
-    if (!data.temporaryAddress.doorNo) errors.doorNo = "Door No required";
-    if (!data.temporaryAddress.street) errors.street = "Street required";
-    if (!data.temporaryAddress.taluk) errors.taluk = "Taluk required";
-    if (!data.temporaryAddress.district) errors.district = "District required";
-    if (!data.temporaryAddress.state) errors.state = "State required";
-    if (!data.temporaryAddress.pincode) errors.pincode = "Pincode required";
-
-    if (!data.selfEmail) errors.selfEmail = "Email is required";
-    if (!data.selfMobileNo) {
-      errors.selfMobileNo = "Mobile number is required";
-    } else if (!mobileRegex.test(data.selfMobileNo)) {
-      errors.selfMobileNo =
-        "Enter a valid 10-digit mobile number (not starting with 0)";
-    }
-    if (!data.selfWhatsapp) {
-      errors.selfWhatsapp = "Whatsapp number is required";
-    } else if (!mobileRegex.test(data.selfWhatsapp)) {
-      errors.selfWhatsapp =
-        "Enter a valid 10-digit Whatsapp number (not starting with 0)";
-    }
-  }
-  // educational details
-  if (step === 2) {
-    if (!data.courseEntryType)
-      errors.courseEntryType = "Course Entry Type is required";
-    if (!data.preferredCourse)
-      errors.preferredCourse = "Course Prefered is required";
-    // if (!data.insuranceNominee)
-    //   errors.insuranceNominee = "Insurance Nominee is required";
-    if (!data.hostelDayScholar)
-      errors.hostelDayScholar = " Mode of Stay is required";
-    if (!data.emisNo) errors.emisNo = "Emis No is required";
-    // if (!data.siblingsStudyingHere) {
-    //   errors.siblingsStudyingHere = "Sibling details is required";
-    // }
-
-    // if (data.siblingsStudyingHere === true) {
-    //   // errors.siblingDetails = {};
-    //   if (!data.siblingDetails.name) {
-    //     errors.siblingDetails.name = "Sibling name is required";
-    //   }
-    //   if (!data.siblingDetails.rollNo) {
-    //     errors.siblingDetails.rollNo = "Sibling roll no is required";
-    //   }
-    //   if (!data.siblingDetails.department) {
-    //     errors.siblingDetails.department = "Sibling department is required";
-    //   }
-    //   if (!data.siblingDetails.yearOfAdmission) {
-    //     errors.siblingDetails.yearOfAdmission =
-    //       "Sibling year of admission is required";
-    //   }
-    // }
-
-    if (!data.careerOption) errors.careerOption = "Carrer option is required";
-  }
-  // parents details
-  if (step === 3) {
-    // Father validation
-    if (!data.father.name) errors.fatherName = "Father's name is required";
-    if (!data.father.qualification)
-      errors.fatherQualification = "Father's qualification is required";
-    if (!data.father.workType)
-      errors.fatherWorkType = "Father's work type is required";
-    // if (!data.father.organizationName)
-    //   errors.fatherOrganization = "Father's organization name is required";
-    // if (!data.father.designation)
-    //   errors.fatherDesignation = "Father's designation is required";
-    if (!data.father.annualIncome)
-      errors.fatherIncome = "Father's annual income is required";
-    if (!data.father.mobile) {
-      errors.fatherMobile = "Father's mobile is required";
-    } else if (!mobileRegex.test(data.father.mobile)) {
-      errors.fatherMobile =
-        "Enter a valid 10-digit mobile number for Father (not starting with 0)";
-    }
-
-    // Mother validation
-    if (!data.mother.name) errors.motherName = "Mother's name is required";
-    if (!data.mother.qualification)
-      errors.motherQualification = "Mother's qualification is required";
-    if (!data.mother.workType)
-      errors.motherWorkType = "Mother's work type is required";
-    // if (!data.mother.organizationName)
-    //   errors.motherOrganization = "Mother's organization name is required";
-    // if (!data.mother.designation)
-    //   errors.motherDesignation = "Mother's designation is required";
-    if (!data.mother.annualIncome)
-      errors.motherIncome = "Mother's annual income is required";
-    if (!data.mother.mobile) {
-      errors.motherMobile = "Mother's mobile is required";
-    } else if (!mobileRegex.test(data.mother.mobile)) {
-      errors.motherMobile =
-        "Enter a valid 10-digit mobile number for Mother (not starting with 0)";
-    }
-  }
-  // Additional Infromation
-  if (step === 4) {
-    if (!data.quota) {
-      errors.quota = "Quota selection is required";
-    }
-
-    if (!data.familyIncomeAsPerCertificate) {
-      errors.familyIncomeAsPerCertificate =
-        "Family income (as per certificate) is required";
-    }
-
-    if (!data.incomeCertificateNo) {
-      errors.incomeCertificateNo = "Income certificate number is required";
-    }
-
-    // Conditional for Government Quota
-    if (data.quota === "Government Quota") {
-      if (!data.counsellingApplicationNo) {
-        errors.counsellingApplicationNo =
-          "Counselling application number is required";
-      }
-      if (!data.counsellingOverallRank) {
-        errors.counsellingOverallRank = "Counselling overall rank is required";
-      }
-      if (!data.counsellingCommunityRank) {
-        errors.counsellingCommunityRank =
-          "Counselling community rank is required";
-      }
-
-      // Conditional for First Graduate
-      if (data.isFirstGraduate && !data.firstGraduateNumber) {
-        errors.firstGraduateNumber =
-          "First Graduate Certificate Number is required";
-      }
-    }
-  }
-  // Student documents
-  if (step === 5) {
-    if (!data.studentPhoto || data.studentPhoto.length === 0)
-      errors.studentPhoto = "Student photo is required";
-    if (!data.fatherPhoto || data.fatherPhoto.length === 0)
-      errors.fatherPhoto = "Father's photo is required";
-    if (!data.motherPhoto || data.motherPhoto.length === 0)
-      errors.motherPhoto = "Mother's photo is required";
-
-    if (!data.tenthMarkSheet)
-      errors.tenthMarkSheet = "10th Mark Sheet is required";
-    if (!data.eleventhMarkSheet)
-      errors.eleventhMarkSheet = "11th Mark Sheet is required";
-    if (!data.twelthMarkSheet)
-      errors.twelthMarkSheet = "12th Mark Sheet is required";
-    if (!data.transferCertificate)
-      errors.transferCertificate = "Transfer Certificate is required";
-
-    if (data.quota === "Government Quota") {
-      if (!data.allotmentOrder)
-        errors.allotmentOrder = "Allotment Order is required";
-      if (!data.declarationForm)
-        errors.declarationForm = "Declaration Form is required";
-      if (!data.physicalFitnessForm)
-        errors.physicalFitnessForm = "Physical Fitness Form is required";
-    }
-    if (!data.communityCertificate)
-      errors.communityCertificate = "Community Certificate is required";
-    if (!data.incomeCertificate)
-      errors.incomeCertificate = "Income Certificate is required";
-
-    if (!data.aadharCopy) errors.aadharCopy = "Aadhar copy is required";
-
-    // if (
-    //   data.nationality !== "India" ||
-    //   data.permanentAddress.state !== "Tamil Nadu"
-    // ) {
-    //   if (!data.migrationCertificate)
-    //     errors.migrationCertificate = "Migration Certificate is required";
-    // }
-
-    if (data.isFirstGraduate) {
-      if (!data.firstGraduateCertificate)
-        errors.firstGraduateCertificate =
-          "First Graduate Certificate is required";
-    }
-  }
-  return errors;
+  return {}; // skip all validation for now
 }
+
+// function validate(data, step) {
+//   const errors = {};
+//   const mobileRegex = /^[1-9][0-9]{9}$/;
+//   //personal details step
+//   if (step === 0) {
+//     if (!data.studentName) errors.studentName = "Name is required";
+//     if (!data.gender) errors.gender = "Gender is required";
+//     if (!data.dob) errors.dob = "Date of birth is required";
+//     if (!data.community) errors.community = "Community is required";
+//     if (!data.casteName) errors.casteName = "CasteName is required";
+//     if (!data.communityCertificateNo)
+//       errors.communityCertificateNo =
+//         "Community certificate number is required";
+//     if (!data.motherTongue) errors.motherTongue = "Mother tounge is important";
+//     if (!data.religion) errors.religion = "Religion is required";
+//     if (!data.nationality) errors.nationality = "Nationality is required";
+//     if (!data.bloodGroup) errors.bloodGroup = "Blood Group is required";
+//     if (!data.aadharNo) errors.aadharNo = "Aadhaar number is important";
+//   }
+//   // personal contact details
+//   if (step === 1) {
+//     if (!data.permanentAddress.doorNo)
+//       errors.permanentdoorNo = "Door No required";
+//     if (!data.permanentAddress.street)
+//       errors.permanentstreet = "Street required";
+//     if (!data.permanentAddress.taluk) errors.permanenttaluk = "Taluk required";
+//     if (!data.permanentAddress.district)
+//       errors.permanentdistrict = "District required";
+//     if (!data.permanentAddress.state) errors.permanentstate = "State required";
+//     if (!data.permanentAddress.pincode)
+//       errors.permanentpincode = "Pincode required";
+
+//     if (!data.temporaryAddress.doorNo) errors.doorNo = "Door No required";
+//     if (!data.temporaryAddress.street) errors.street = "Street required";
+//     if (!data.temporaryAddress.taluk) errors.taluk = "Taluk required";
+//     if (!data.temporaryAddress.district) errors.district = "District required";
+//     if (!data.temporaryAddress.state) errors.state = "State required";
+//     if (!data.temporaryAddress.pincode) errors.pincode = "Pincode required";
+
+//     if (!data.selfEmail) errors.selfEmail = "Email is required";
+//     if (!data.selfMobileNo) {
+//       errors.selfMobileNo = "Mobile number is required";
+//     } else if (!mobileRegex.test(data.selfMobileNo)) {
+//       errors.selfMobileNo =
+//         "Enter a valid 10-digit mobile number (not starting with 0)";
+//     }
+//     if (!data.selfWhatsapp) {
+//       errors.selfWhatsapp = "Whatsapp number is required";
+//     } else if (!mobileRegex.test(data.selfWhatsapp)) {
+//       errors.selfWhatsapp =
+//         "Enter a valid 10-digit Whatsapp number (not starting with 0)";
+//     }
+//   }
+//   // educational details
+//   if (step === 2) {
+//     if (!data.courseEntryType)
+//       errors.courseEntryType = "Course Entry Type is required";
+//     if (!data.preferredCourse)
+//       errors.preferredCourse = "Course Prefered is required";
+//     // if (!data.insuranceNominee)
+//     //   errors.insuranceNominee = "Insurance Nominee is required";
+//     if (!data.hostelDayScholar)
+//       errors.hostelDayScholar = " Mode of Stay is required";
+//     if (!data.emisNo) errors.emisNo = "Emis No is required";
+//     // if (!data.siblingsStudyingHere) {
+//     //   errors.siblingsStudyingHere = "Sibling details is required";
+//     // }
+
+//     // if (data.siblingsStudyingHere === true) {
+//     //   // errors.siblingDetails = {};
+//     //   if (!data.siblingDetails.name) {
+//     //     errors.siblingDetails.name = "Sibling name is required";
+//     //   }
+//     //   if (!data.siblingDetails.rollNo) {
+//     //     errors.siblingDetails.rollNo = "Sibling roll no is required";
+//     //   }
+//     //   if (!data.siblingDetails.department) {
+//     //     errors.siblingDetails.department = "Sibling department is required";
+//     //   }
+//     //   if (!data.siblingDetails.yearOfAdmission) {
+//     //     errors.siblingDetails.yearOfAdmission =
+//     //       "Sibling year of admission is required";
+//     //   }
+//     // }
+
+//     if (!data.careerOption) errors.careerOption = "Carrer option is required";
+//   }
+//   // parents details
+//   if (step === 3) {
+//     // Father validation
+//     if (!data.father.name) errors.fatherName = "Father's name is required";
+//     if (!data.father.qualification)
+//       errors.fatherQualification = "Father's qualification is required";
+//     if (!data.father.workType)
+//       errors.fatherWorkType = "Father's work type is required";
+//     // if (!data.father.organizationName)
+//     //   errors.fatherOrganization = "Father's organization name is required";
+//     // if (!data.father.designation)
+//     //   errors.fatherDesignation = "Father's designation is required";
+//     if (!data.father.annualIncome)
+//       errors.fatherIncome = "Father's annual income is required";
+//     if (!data.father.mobile) {
+//       errors.fatherMobile = "Father's mobile is required";
+//     } else if (!mobileRegex.test(data.father.mobile)) {
+//       errors.fatherMobile =
+//         "Enter a valid 10-digit mobile number for Father (not starting with 0)";
+//     }
+
+//     // Mother validation
+//     if (!data.mother.name) errors.motherName = "Mother's name is required";
+//     if (!data.mother.qualification)
+//       errors.motherQualification = "Mother's qualification is required";
+//     if (!data.mother.workType)
+//       errors.motherWorkType = "Mother's work type is required";
+//     // if (!data.mother.organizationName)
+//     //   errors.motherOrganization = "Mother's organization name is required";
+//     // if (!data.mother.designation)
+//     //   errors.motherDesignation = "Mother's designation is required";
+//     if (!data.mother.annualIncome)
+//       errors.motherIncome = "Mother's annual income is required";
+//     if (!data.mother.mobile) {
+//       errors.motherMobile = "Mother's mobile is required";
+//     } else if (!mobileRegex.test(data.mother.mobile)) {
+//       errors.motherMobile =
+//         "Enter a valid 10-digit mobile number for Mother (not starting with 0)";
+//     }
+//   }
+//   // Additional Infromation
+//   if (step === 4) {
+//     if (!data.quota) {
+//       errors.quota = "Quota selection is required";
+//     }
+
+//     if (!data.familyIncomeAsPerCertificate) {
+//       errors.familyIncomeAsPerCertificate =
+//         "Family income (as per certificate) is required";
+//     }
+
+//     if (!data.incomeCertificateNo) {
+//       errors.incomeCertificateNo = "Income certificate number is required";
+//     }
+
+//     // Conditional for Government Quota
+//     if (data.quota === "Government Quota") {
+//       if (!data.counsellingApplicationNo) {
+//         errors.counsellingApplicationNo =
+//           "Counselling application number is required";
+//       }
+//       if (!data.counsellingOverallRank) {
+//         errors.counsellingOverallRank = "Counselling overall rank is required";
+//       }
+//       if (!data.counsellingCommunityRank) {
+//         errors.counsellingCommunityRank =
+//           "Counselling community rank is required";
+//       }
+
+//       // Conditional for First Graduate
+//       if (data.isFirstGraduate && !data.firstGraduateNumber) {
+//         errors.firstGraduateNumber =
+//           "First Graduate Certificate Number is required";
+//       }
+//     }
+//   }
+//   // Student documents
+//   if (step === 5) {
+//     if (!data.studentPhoto || data.studentPhoto.length === 0)
+//       errors.studentPhoto = "Student photo is required";
+//     if (!data.fatherPhoto || data.fatherPhoto.length === 0)
+//       errors.fatherPhoto = "Father's photo is required";
+//     if (!data.motherPhoto || data.motherPhoto.length === 0)
+//       errors.motherPhoto = "Mother's photo is required";
+
+//     if (!data.tenthMarkSheet)
+//       errors.tenthMarkSheet = "10th Mark Sheet is required";
+//     if (!data.eleventhMarkSheet)
+//       errors.eleventhMarkSheet = "11th Mark Sheet is required";
+//     if (!data.twelthMarkSheet)
+//       errors.twelthMarkSheet = "12th Mark Sheet is required";
+//     if (!data.transferCertificate)
+//       errors.transferCertificate = "Transfer Certificate is required";
+
+//     if (data.quota === "Government Quota") {
+//       if (!data.allotmentOrder)
+//         errors.allotmentOrder = "Allotment Order is required";
+//       if (!data.declarationForm)
+//         errors.declarationForm = "Declaration Form is required";
+//       if (!data.physicalFitnessForm)
+//         errors.physicalFitnessForm = "Physical Fitness Form is required";
+//     }
+//     if (!data.communityCertificate)
+//       errors.communityCertificate = "Community Certificate is required";
+//     if (!data.incomeCertificate)
+//       errors.incomeCertificate = "Income Certificate is required";
+
+//     if (!data.aadharCopy) errors.aadharCopy = "Aadhar copy is required";
+
+//     // if (
+//     //   data.nationality !== "India" ||
+//     //   data.permanentAddress.state !== "Tamil Nadu"
+//     // ) {
+//     //   if (!data.migrationCertificate)
+//     //     errors.migrationCertificate = "Migration Certificate is required";
+//     // }
+
+//     if (data.isFirstGraduate) {
+//       if (!data.firstGraduateCertificate)
+//         errors.firstGraduateCertificate =
+//           "First Graduate Certificate is required";
+//     }
+//   }
+//   return errors;
+// }
 const ApplicationFormData = () => {
   const [step, setStep] = useState(0);
   const [data, setData] = useState(initialData);

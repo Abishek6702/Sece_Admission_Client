@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import nodata from "../../assets/no-data.svg";
 function FilterMenu({ options, selected, onChange, onClose, customContent }) {
   return (
-    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2">
+    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2 ">
       {customContent ? (
         customContent
       ) : (
@@ -124,7 +124,18 @@ export default function CourseTable() {
 
   const rowsPerPage = 6;
   const [data, setData] = useState([]);
-  const categoryOptions = ["B.E ECE", "B.E CSE", "B.E EEE", "B.E CCE"];
+  const categoryOptions = [
+    "B.E ECE",
+    "B.E CSE",
+    "B.E EEE",
+    "B.E CCE",
+    "B.E AI-ML",
+    "B.E Cyber Security",
+    "B.E Mech",
+    "B.Tech IT",
+    "B.Tech CSBS",
+    "B.Tech AI & DS",
+  ];
   const graduateOptions = ["Yes", "No"];
   const statusOptions = ["Selected", "Pending", "Rejected"];
   const cutOffRanges = [
@@ -511,7 +522,7 @@ export default function CourseTable() {
       )}
 
       {/* Table with filters in headers */}
-      <div className="overflow-x-auto rounded-lg shadow-sm">
+      <div className="overflow-x-auto rounded-lg shadow-sm ">
         <table className="min-w-full border-collapse bg-white">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>

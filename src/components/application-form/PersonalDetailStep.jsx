@@ -6,7 +6,7 @@ const PersonalDetailStep = ({
   onChange = () => {},
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[64vh] pr-6 overflow-auto custom-scroll">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[56vh] pr-6 overflow-auto custom-scroll">
       {/* Student Name */}
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">
@@ -51,7 +51,7 @@ const PersonalDetailStep = ({
         </label>
         <input
           type="date"
-          value={data.dob || ""}
+         value={data.dob ? data.dob.split("T")[0] : ""}
           onChange={(e) => onChange("dob", e.target.value)}
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
         />

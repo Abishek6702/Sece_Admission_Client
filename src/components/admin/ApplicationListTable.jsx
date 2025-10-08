@@ -451,7 +451,7 @@ export default function ApplicationListTable() {
                   setFilterOpen(filterOpen === "course" ? null : "course")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
                   <span>Preferred Course</span>
                   <svg
                     className={`w-4 h-4 ${
@@ -527,7 +527,7 @@ export default function ApplicationListTable() {
                   setFilterOpen(filterOpen === "hostel" ? null : "hostel")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
                   <span>Hostel/Day Scholar</span>
                   <svg
                     className={`w-4 h-4 ${
@@ -565,7 +565,7 @@ export default function ApplicationListTable() {
                   setFilterOpen(filterOpen === "date" ? null : "date")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
                   <span>Created At</span>
                   <svg
                     className={`w-4 h-4 ${
@@ -690,11 +690,11 @@ export default function ApplicationListTable() {
                     className="rounded border-gray-300"
                   />
                 </td>
-                <td className="px-5 py-3 border-gray-200">{row.studentName}</td>
-                <td className="px-5 py-3 border-gray-200">
+                <td className="px-5 py-3 border-gray-200 truncate">{row.studentName}</td>
+                <td className="px-5 py-3 border-gray-200 truncate">
                   {row.preferredCourse}
                 </td>
-                <td className="px-5 py-3 border-gray-200">{row.Quota}</td>
+                <td className="px-5 py-3 border-gray-200 truncate">{row.Quota}</td>
                 <td className="px-5 py-3 border-gray-200">
                   {row.hostelDayScholar}
                 </td>

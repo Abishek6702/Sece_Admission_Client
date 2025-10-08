@@ -45,7 +45,7 @@ const PersonalContactStep = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[64vh] pr-6 overflow-auto custom-scroll">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[56vh] pr-6 overflow-auto custom-scroll">
       {/* PERMANENT ADDRESS */}
       <div className="md:col-span-3">
         <h3 className="text-xl playfair font-semibold text-gray-700 mb-2">

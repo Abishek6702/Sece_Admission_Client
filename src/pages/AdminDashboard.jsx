@@ -1,5 +1,11 @@
 import React from "react";
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import ApplicationList from "../components/admin/ApplicationList";
 import EnquirList from "../components/admin/EnquiryList";
 import Dashboard from "../components/admin/Dashboard";
@@ -7,12 +13,13 @@ import AdminSidebar from "../components/admin/AdminSidebar";
 import EnquiryDeatil from "../components/admin/EnquiryDeatil";
 import FinalizedEnquiries from "../components/admin/FinalizedEnquiries";
 import ApplicationDetail from "../components/admin/ApplicationDetail";
+// import FinalizedApplications from "../components/admin/FinalizedApplications";
 
 const TABS = {
   DASHBOARD: "dashboard",
   ENQUIRY_LIST: "enquiry_list",
   APPLICATION_LIST: "application_list",
-  FINALIZED_ENQUIRIES:"finalized_enquiries",
+  FINALIZED_ENQUIRIES: "finalized_enquiries",
 };
 
 const AdminDashboard = () => {
@@ -23,7 +30,9 @@ const AdminDashboard = () => {
   const pathTab = location.pathname.split("/")[2]; // e.g. "dashboard"
 
   // Validate pathTab or fallback to dashboard
-  const activeTab = Object.values(TABS).includes(pathTab) ? pathTab : TABS.DASHBOARD;
+  const activeTab = Object.values(TABS).includes(pathTab)
+    ? pathTab
+    : TABS.DASHBOARD;
 
   // Handler to change tab by navigating to new route
   const setActiveTab = (tab) => {
@@ -41,10 +50,20 @@ const AdminDashboard = () => {
             <Route path="enquiry_list" element={<EnquirList />} />
             <Route path="application_list" element={<ApplicationList />} />
             {/* Redirect any unknown /admin/* to /admin/dashboard */}
-            <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path="enquiry_list/:id" element={<EnquiryDeatil/>} />
-            <Route path="finalized_enquiries" element={<FinalizedEnquiries/>}/>
-            <Route path="application_list/:id" element={<ApplicationDetail/>}/>
+            <Route
+              path="*"
+              element={<Navigate to="/admin/dashboard" replace />}
+            />
+            <Route path="enquiry_list/:id" element={<EnquiryDeatil />} />
+            <Route
+              path="finalized_enquiries"
+              element={<FinalizedEnquiries />}
+            />
+            <Route
+              path="application_list/:id"
+              element={<ApplicationDetail />}
+            />
+            {/* <Route path="finalized_applications" element={<FinalizedApplications/>}/> */}
           </Routes>
         </div>
       </main>

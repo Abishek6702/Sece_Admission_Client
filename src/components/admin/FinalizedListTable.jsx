@@ -442,7 +442,7 @@ export default function FinalizedListTable() {
       </div>
 
       {/* Table with filters in headers */}
-      <div className="overflow-x-auto rounded-lg shadow-sm">
+      <div className="overflow-x-auto rounded-lg shadow-sm h-80">
         <table className="min-w-full border-collapse bg-white">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>

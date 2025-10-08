@@ -21,11 +21,24 @@ const renderField = (value) => {
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-const renderFileCard = (file, label) => {
+const isUpdated = (app, fieldkey) =>
+  Array.isArray(app?.lastUpdatedFields) &&
+  app.lastUpdatedFields.includes(fieldkey);
+
+const renderFileCard = (file, label, fieldkey, app) => {
   if (!file || (Array.isArray(file) && file.length === 0)) {
     return (
-      <div className="bg-gray-100 rounded-md p-3 text-center text-gray-400 ">
-        {label}: N/A
+      // <div className="bg-gray-100 rounded-md p-3 text-center text-gray-400 ">
+      //   {label}: N/A
+      // </div>
+      <div
+        className={`rounded-md p-3 text-center ${
+          isUpdated(app, fieldkey)
+            ? "bg-yellow-300 border border-yellow-400 text-yellow-600"
+            : "bg-gray-100 text-gray-400"
+        }`}
+      >
+        {label}:N/A
       </div>
     );
   }
@@ -38,7 +51,11 @@ const renderFileCard = (file, label) => {
     return file.map((url, i) => (
       <div
         key={url}
-        className="cursor-pointer bg-white border border-gray-300 rounded-md  mb-2 p-3 flex items-center gap-3 hover:ring hover:ring-[#0B56A4]"
+        className={`cursor-pointer bg-white border border-gray-300 rounded-md  mb-2 p-3 flex items-center gap-3 hover:ring hover:ring-[#0B56A4] ${
+          isUpdated(app, fieldkey)
+            ? "border-yellow-400 bg-yellow-50"
+            : "border-gray-300 bg-white"
+        }`}
         onClick={() => openTab(url)}
         title={label}
       >
@@ -52,7 +69,11 @@ const renderFileCard = (file, label) => {
   const fullUrl = file.startsWith("http") ? file : `${baseUrl}/${file}`;
   return (
     <div
-      className="cursor-pointer bg-white border border-gray-300 rounded-md  mb-2 p-3 flex items-center gap-3 hover:ring hover:ring-[#0B56A4]"
+      className={`cursor-pointer  border  rounded-md  mb-2 p-3 flex items-center gap-3 hover:ring hover:ring-[#0B56A4] ${
+        isUpdated(app, fieldkey)
+          ? "border-yellow-400 bg-yellow-50"
+          : "border-gray-300 bg-white"
+      }`}
       onClick={() => openTab(file)}
       title={label}
     >
@@ -75,11 +96,12 @@ export default function ApplicationDetail() {
       .then((json) => setApp(json.data))
       .catch(console.error);
   }, [id]);
+  console.log(app);
 
   if (!app)
     return (
       <>
-        <div className="border ">
+        <div className=" ">
           <div className="loader m-auto"></div>
           <p className="m-auto text-center mt-4">Loading...</p>
         </div>
@@ -163,7 +185,21 @@ export default function ApplicationDetail() {
           </Link>
           <ChevronRight />
           <span className="font-semibold text-[#0B56A4]">
-            {renderField(app.studentName)}
+            {renderField(app.studentName)}{" "}
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ml-4
+                ${
+                  app.status === "Admitted" ? "bg-green-100 text-green-600" : ""
+                }
+                ${
+                  app.status === "Pending"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : ""
+                }
+                ${app.status === "Remark" ? "bg-red-100 text-red-600" : ""}`}
+            >
+              {app.status}
+            </span>
           </span>
         </nav>
         <div className="flex items-center gap-4">
@@ -248,31 +284,144 @@ export default function ApplicationDetail() {
           <div className="border-b border-gray-300 mb-4"></div>
           <dl className="grid grid-cols-4 gap-x-10 gap-y-3 text-sm">
             <dt className="font-medium">Full Name:</dt>
-            <dd>{renderField(app.studentName)}</dd>
+            <dd
+              className={
+                isUpdated(app, "studentName")
+                  ? "bg-yellow-200 w-fit   px-4  rounded"
+                  : ""
+              }
+            >
+              {renderField(app.studentName)}
+            </dd>
             <dt className="font-medium">Date of Birth:</dt>
-            <dd>{app.dob ? new Date(app.dob).toLocaleDateString() : "N/A"}</dd>
+            <dd
+              className={
+                isUpdated(app, "dob")
+                  ? "bg-yellow-200 w-fit    px-2 rounded"
+                  : ""
+              }
+            >
+              {app.dob ? new Date(app.dob).toLocaleDateString() : "N/A"}
+            </dd>
+
             <dt className="font-medium">Gender:</dt>
-            <dd>{renderField(app.gender)}</dd>
+            <dd
+              className={
+                isUpdated(app, "gender")
+                  ? "bg-yellow-200 w-fit   px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.gender)}
+            </dd>
+
             <dt className="font-medium">Community:</dt>
-            <dd>{renderField(app.community)}</dd>
+            <dd
+              className={
+                isUpdated(app, "community")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.community)}
+            </dd>
+
             <dt className="font-medium">Caste:</dt>
-            <dd>{renderField(app.casteName)}</dd>
+            <dd
+              className={
+                isUpdated(app, "casteName")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.casteName)}
+            </dd>
+
             <dt className="font-medium">Mother Tongue:</dt>
-            <dd>{renderField(app.motherTongue)}</dd>
+            <dd
+              className={
+                isUpdated(app, "motherTongue")
+                  ? "bg-yellow-50 px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.motherTongue)}
+            </dd>
+
             <dt className="font-medium">Religion:</dt>
-            <dd>{renderField(app.religion)}</dd>
+            <dd
+              className={
+                isUpdated(app, "religion")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.religion)}
+            </dd>
+
             <dt className="font-medium">Blood Group:</dt>
-            <dd>{renderField(app.bloodGroup)}</dd>
+            <dd
+              className={
+                isUpdated(app, "bloodGroup")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.bloodGroup)}
+            </dd>
+
             <dt className="font-medium">Aadhar No:</dt>
-            <dd>{renderField(app.aadharNo)}</dd>
+            <dd
+              className={
+                isUpdated(app, "aadharNo")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.aadharNo)}
+            </dd>
+
             <dt className="font-medium">Mobile:</dt>
-            <dd>{renderField(app.selfMobileNo)}</dd>
+            <dd
+              className={
+                isUpdated(app, "selfMobileNo")
+                  ? "bg-yellow-50 px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.selfMobileNo)}
+            </dd>
+
             <dt className="font-medium">Email:</dt>
-            <dd>{renderField(app.selfEmail)}</dd>
+            <dd
+              className={
+                isUpdated(app, "selfEmail")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.selfEmail)}
+            </dd>
+
             <dt className="font-medium">Hostel/Day Scholar:</dt>
-            <dd>{renderField(app.hostelDayScholar)}</dd>
+            <dd
+              className={
+                isUpdated(app, "hostelDayScholar")
+                  ? "bg-yellow-50 px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.hostelDayScholar)}
+            </dd>
+
             <dt className="font-medium">Permanent Address:</dt>
-            <dd>
+            <dd
+              className={
+                isUpdated(app, "permanentAddress")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
               {app.permanentAddress
                 ? `${renderField(app.permanentAddress.doorNo)}, ${renderField(
                     app.permanentAddress.street
@@ -284,7 +433,13 @@ export default function ApplicationDetail() {
                 : "N/A"}
             </dd>
             <dt className="font-medium">Temporary Address:</dt>
-            <dd>
+            <dd
+              className={
+                isUpdated(app, "temporaryAddress")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
               {app.temporaryAddress
                 ? `${renderField(app.temporaryAddress.doorNo)}, ${renderField(
                     app.temporaryAddress.street
@@ -294,6 +449,16 @@ export default function ApplicationDetail() {
                     app.temporaryAddress.state
                   )} - ${renderField(app.temporaryAddress.pincode)}`
                 : "N/A"}
+            </dd>
+            <dt className="font-medium">Community No:</dt>
+            <dd
+              className={
+                isUpdated(app, "communityCertificateNo")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.communityCertificateNo)}
             </dd>
           </dl>
         </section>
@@ -306,23 +471,103 @@ export default function ApplicationDetail() {
           <div className="border-b border-gray-300 mb-4"></div>
           <dl className="grid grid-cols-4 gap-x-10 gap-y-3 text-sm">
             <dt className="font-medium">Course Entry Type:</dt>
-            <dd>{renderField(app.courseEntryType)}</dd>
+            <dd
+              className={
+                isUpdated(app, "courseEntryType")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.courseEntryType)}
+            </dd>
+
             <dt className="font-medium">Preferred Course:</dt>
-            <dd>{renderField(app.preferredCourse)}</dd>
+            <dd
+              className={
+                isUpdated(app, "preferredCourse")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.preferredCourse)}
+            </dd>
+
             <dt className="font-medium">Quota:</dt>
-            <dd>{renderField(app.Quota)}</dd>
+            <dd
+              className={
+                isUpdated(app, "Quota")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.Quota)}
+            </dd>
+
             <dt className="font-medium">Career Option:</dt>
-            <dd>{renderField(app.careerOption)}</dd>
+            <dd
+              className={
+                isUpdated(app, "careerOption")
+                  ? "bg-yellow-200 w-fit   px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.careerOption)}
+            </dd>
+
             <dt className="font-medium">First Graduate Status:</dt>
-            <dd>{app.isFirstGraduate ? "Yes" : "No"}</dd>
+            <dd
+              className={
+                isUpdated(app, "isFirstGraduate")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {app.isFirstGraduate ? "Yes" : "No"}
+            </dd>
+
             <dt className="font-medium">Family Income (Certificate):</dt>
-            <dd>{renderField(app.familyIncomeAsPerCertificate)}</dd>
+            <dd
+              className={
+                isUpdated(app, "familyIncomeAsPerCertificate")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.familyIncomeAsPerCertificate)}
+            </dd>
+
             <dt className="font-medium">Income Certificate No:</dt>
-            <dd>{renderField(app.incomeCertificateNo)}</dd>
+            <dd
+              className={
+                isUpdated(app, "incomeCertificateNo")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.incomeCertificateNo)}
+            </dd>
+
             <dt className="font-medium">Twelfth Cut Off:</dt>
-            <dd>{app.twelfthMarks?.cutOff ?? "N/A"}</dd>
+            <dd
+              className={
+                isUpdated(app, "twelfthMarks.cutOff")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {app.twelfthMarks?.cutOff ?? "N/A"}
+            </dd>
+
             <dt className="font-medium">EMIS No:</dt>
-            <dd>{renderField(app.emisNo)}</dd>
+            <dd
+              className={
+                isUpdated(app, "emisNo")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.emisNo)}
+            </dd>
           </dl>
         </section>
 
@@ -333,26 +578,115 @@ export default function ApplicationDetail() {
           </h2>
           <div className="border-b border-gray-300 mb-4"></div>
           <dl className="grid grid-cols-4 gap-x-10 gap-y-3 text-sm ">
-            <dt className="font-medium">Father's Name:</dt>
-            <dd>{renderField(app.father?.name)}</dd>
-            <dt className="font-medium">Father's Qualification:</dt>
-            <dd>{renderField(app.father?.qualification)}</dd>
-            <dt className="font-medium">Father's Income:</dt>
-            <dd>{renderField(app.father?.annualIncome)}</dd>
-            <dt className="font-medium">Father's Mobile:</dt>
-            <dd>{renderField(app.father?.mobile)}</dd>
-            <dt className="font-medium">Mother's Name:</dt>
-            <dd>{renderField(app.mother?.name)}</dd>
-            <dt className="font-medium">Mother's Qualification:</dt>
-            <dd>{renderField(app.mother?.qualification)}</dd>
-            <dt className="font-medium">Mother's Income:</dt>
-            <dd>{renderField(app.mother?.annualIncome)}</dd>
-            <dt className="font-medium">Mother's Mobile:</dt>
-            <dd>{renderField(app.mother?.mobile)}</dd>
-            <dt className="font-medium">Guardian Name:</dt>
-            <dd>{renderField(app.guardian?.name)}</dd>
-            <dt className="font-medium">Guardian Mobile:</dt>
-            <dd>{renderField(app.guardian?.mobile)}</dd>
+            <dt>Father's Name:</dt>
+            <dd
+              className={
+                isUpdated(app, "father.name")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.father?.name)}
+            </dd>
+
+            <dt>Father's Qualification:</dt>
+            <dd
+              className={
+                isUpdated(app, "father.qualification")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.father?.qualification)}
+            </dd>
+
+            <dt>Father's Income:</dt>
+            <dd
+              className={
+                isUpdated(app, "father.annualIncome")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.father?.annualIncome)}
+            </dd>
+
+            <dt>Father's Mobile:</dt>
+            <dd
+              className={
+                isUpdated(app, "father.mobile")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.father?.mobile)}
+            </dd>
+
+            <dt>Mother's Name:</dt>
+            <dd
+              className={
+                isUpdated(app, "mother.name")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.mother?.name)}
+            </dd>
+
+            <dt>Mother's Qualification:</dt>
+            <dd
+              className={
+                isUpdated(app, "mother.qualification")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.mother?.qualification)}
+            </dd>
+
+            <dt>Mother's Income:</dt>
+            <dd
+              className={
+                isUpdated(app, "mother.annualIncome")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.mother?.annualIncome)}
+            </dd>
+
+            <dt>Mother's Mobile:</dt>
+            <dd
+              className={
+                isUpdated(app, "mother.mobile")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.mother?.mobile)}
+            </dd>
+
+            <dt>Guardian Name:</dt>
+            <dd
+              className={
+                isUpdated(app, "guardian.name")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.guardian?.name)}
+            </dd>
+
+            <dt>Guardian Mobile:</dt>
+            <dd
+              className={
+                isUpdated(app, "guardian.mobile")
+                  ? "bg-yellow-200 w-fit  px-2 rounded"
+                  : ""
+              }
+            >
+              {renderField(app.guardian?.mobile)}
+            </dd>
           </dl>
         </section>
 
@@ -381,17 +715,68 @@ export default function ApplicationDetail() {
           </h2>
           <div className="border-b border-gray-300 mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {renderFileCard(app.studentPhoto, "Student Photo")}
-            {renderFileCard(app.fatherPhoto, "Father Photo")}
-            {renderFileCard(app.motherPhoto, "Mother Photo")}
-            {renderFileCard(app.tenthMarkSheet, "10th Marksheet")}
-            {renderFileCard(app.eleventhMarkSheet, "11th Marksheet")}
-            {renderFileCard(app.twelthMarkSheet, "12th Marksheet")}
-            {renderFileCard(app.transferCertificate, "Transfer Certificate")}
-            {renderFileCard(app.communityCertificate, "Community Certificate")}
-            {renderFileCard(app.incomeCertificate, "Income Certificate")}
-            {renderFileCard(app.migrationCertificate, "Migration Certificate")}
-            {renderFileCard(app.aadharCopy, "Aadhar Copy")}
+            {renderFileCard(
+              app.studentPhoto,
+              "Student Photo",
+              "studentPhoto",
+              app
+            )}
+            {renderFileCard(
+              app.fatherPhoto,
+              "Father Photo",
+              "fatherPhoto",
+              app
+            )}
+            {renderFileCard(
+              app.motherPhoto,
+              "Mother Photo",
+              "motherPhoto",
+              app
+            )}
+            {renderFileCard(
+              app.tenthMarkSheet,
+              "10th Marksheet",
+              "tenthMarkSheet",
+              app
+            )}
+            {renderFileCard(
+              app.eleventhMarkSheet,
+              "11th Marksheet",
+              "eleventhMarkSheet",
+              app
+            )}
+            {renderFileCard(
+              app.twelthMarkSheet,
+              "12th Marksheet",
+              "twelthMarkSheet",
+              app
+            )}
+            {renderFileCard(
+              app.transferCertificate,
+              "Transfer Certificate",
+              "transferCertificate",
+              app
+            )}
+            {renderFileCard(
+              app.communityCertificate,
+              "Community Certificate",
+              "communityCertificate",
+              app
+            )}
+            {renderFileCard(
+              app.incomeCertificate,
+              "Income Certificate",
+              "incomeCertificate",
+              app
+            )}
+            {renderFileCard(
+              app.migrationCertificate,
+              "Migration Certificate",
+              "migrationCertificate",
+              app
+            )}
+            {renderFileCard(app.aadharCopy, "Aadhar Copy", "aadharCopy", app)}
+
             {renderFileCard(app.allotmentOrder, "Allotment Order")}
             {renderFileCard(
               app.firstGraduateCertificate,
@@ -431,6 +816,13 @@ export default function ApplicationDetail() {
             <dd>
               {app.createdAt ? new Date(app.createdAt).toLocaleString() : "N/A"}
             </dd>
+            <dt className="font-medium">Remarks:</dt>
+            <dd>
+              {app.remarks && app.remarks.length > 0
+                ? app.remarks[app.remarks.length - 1].remark
+                : "No remarks yet"}
+            </dd>
+
             {/* <dt className="font-medium">Submission Count:</dt>
             <dd>{renderField(app.submissionCount)}</dd> */}
           </dl>
