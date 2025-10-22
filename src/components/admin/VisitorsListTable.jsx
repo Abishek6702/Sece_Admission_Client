@@ -439,7 +439,7 @@ const VisitorsListTable = () => {
               </th>
               {/* Graduate Filter */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative  border-gray-300 cursor-pointer whitespace-nowrap"
                 onClick={() =>
                   setFilterOpen(filterOpen === "graduate" ? null : "graduate")
                 }
@@ -482,7 +482,7 @@ const VisitorsListTable = () => {
                   setFilterOpen(filterOpen === "cutoff" ? null : "cutoff")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap ">
                   <span>Cut Off</span>
                   <svg
                     className={`w-4 h-4  ${
@@ -685,20 +685,24 @@ const VisitorsListTable = () => {
                     className="rounded border-gray-300"
                   />
                 </td>
-                <td className="px-5 py-3  border-gray-200">
+                <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
                   {row.studentName}
                 </td>
                 <td className="px-5 py-3  border-gray-200">{row.community}</td>
-                <td className="px-5 py-3 border-gray-200 truncate">
-                  {row.courseRequired}
+                <td
+                  className="px-3 py-2 border-gray-200 truncate max-w-xs"
+                  
+                >
+                  {row.courseRequired[0]} {/* only show the first course */}
                 </td>
+
                 <td className="px-5 py-3 border-gray-200">
                   {row.isFirstGraduate ? "Yes" : "No"}
                 </td>
 
                 <td className="px-5 py-3  border-gray-200">
                   {row.twelfthMarks?.cutOff}
-                </td> 
+                </td>
                 <td className="px-5 py-3 border-gray-200 whitespace-nowrap">
                   {new Date(row.dateOfVisit).toISOString().split("T")[0]}
                 </td>

@@ -673,12 +673,12 @@ const RevisitedVisitorsTable = () => {
                     className="rounded border-gray-300"
                   />
                 </td>
-                <td className="px-5 py-3  border-gray-200">
+                <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
                   {row.studentName}
                 </td>
                 <td className="px-5 py-3  border-gray-200">{row.community}</td>
                 <td className="px-5 py-3 border-gray-200 truncate">
-                  {row.courseRequired}
+                  {row.courseRequired[0]}
                 </td>
                 <td className="px-5 py-3 border-gray-200">
                   {row.isFirstGraduate ? "Yes" : "No"}
