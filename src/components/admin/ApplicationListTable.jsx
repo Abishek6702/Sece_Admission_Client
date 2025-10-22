@@ -428,7 +428,7 @@ export default function ApplicationListTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg shadow-sm  h-64">
+      <div className="overflow-x-auto rounded-lg shadow-sm  ">
         <table className="min-w-full border-collapse bg-white">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium">
             <tr>

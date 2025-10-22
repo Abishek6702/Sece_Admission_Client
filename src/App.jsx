@@ -14,17 +14,21 @@ import StudentApplicationDetail from "./components/student/StudentApplicationDet
 import ApplicationEditForm from "./components/student/ApplicationEditForm";
 import Dashboard from "./pages/Dashboard";
 import LandingPage from "./pages/Landingpage";
-
+import EnquiryLateral from "./pages/EnquiryLateral";
+import EnquiryPg from "./pages/EnquiryPg";
 
 function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={1500} />
       <Routes>
-        <Route path="/" element={<LandingPage/>}/>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/enquiry" element={<EnquiryForm />} />
         <Route path="/enquiry-thank-you" element={<EnquiryThankYou />} />
+        <Route path="/enquirylateral" element={<EnquiryLateral />} />
+        <Route path="/enquirypg" element={<EnquiryPg />} />
+
         <Route
           path="/application-thank-you"
           element={<ApplicationThankYou />}
@@ -40,10 +44,13 @@ function App() {
         />
         <Route path="/application" element={<ApplicationForm />} />
         <Route path="/text" element={<Text />} />
-        <Route path="/dashboard" element={<Dashboard/>}/>
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="application_list/:id" element={<ApplicationDetail />} />
-        <Route path="/studentapplication/:id" element={<StudentApplicationDetail/>}/>
-        <Route path="/application/edit" element={<ApplicationEditForm/>}/>
+        <Route
+          path="/studentapplication/:id"
+          element={<StudentApplicationDetail />}
+        />
+        <Route path="/application/edit" element={<ApplicationEditForm />} />
 
         {/* Protected Routes */}
         {/* sample setup <Route path="/..." element={<ProtectedRoute><Component name/><ProtectedRoute>}/> */}

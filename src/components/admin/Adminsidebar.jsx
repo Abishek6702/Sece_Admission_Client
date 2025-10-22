@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../assets/sece-logo.svg";
+import {jwtDecode} from "jwt-decode";
 import {
   LogOut,
   Menu,
@@ -8,12 +9,26 @@ import {
   FileText,
   X,
   FileCheck,
+  IdCardLanyard,
+  CircleStar,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUserRole(decoded.role);
+      } catch (err) {
+        console.error("Error decoding token:", err);
+      }
+    }
+  }, []);
   const handleLogout = () => {
     localStorage.removeItem("token");
     toast.info("Logout successfully", { position: "top-right" });
@@ -24,19 +39,39 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
 
   const tabs = [
     { id: "dashboard", label: "Dashboard", Icon: LayoutDashboard },
+    { id: "visitors_list", label: "Visitor List", Icon: IdCardLanyard },
     { id: "enquiry_list", label: "Enquiry List", Icon: ClipboardList },
+
+    { id: "scholarship_list", label: "Scholarship List", Icon: CircleStar },
+
     {
       id: "finalized_enquiries",
       label: "Finalized Enquiries",
       Icon: FileCheck,
     },
     { id: "application_list", label: "Application List", Icon: FileText },
+
     // {
     //   id: "finalized_applications",
     //   label: "Finalized Applications",
     //   Icon: FileCheck,
     // },
   ];
+  const tabsByRole = {
+    Admin: [
+      "dashboard",
+      "visitors_list",
+      "enquiry_list",
+      "scholarship_list",
+      "finalized_enquiries",
+      "application_list",
+    ],
+    Staff: ["dashboard", "visitors_list"],
+  };
+  const visibleTabs = userRole ? tabs.filter((tab) => tabsByRole[userRole]?.includes(tab.id)) : [];
+
+  // If role not yet loaded, you may show empty or loading
+  if (!userRole) return null;
 
   const handleTabClick = (id) => {
     setActiveTab(id);
@@ -130,7 +165,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
           </div>
 
           <nav className="  flex flex-col gap-4  text-[18px]  font-semibold playfair ">
-            {tabs.map(({ id, label, Icon }) => {
+            {visibleTabs.map(({ id, label, Icon }) => {
               const isActive = activeTab === id;
               const itemClass = `${itemBase} ${
                 isActive ? activeClasses + "w-full" : inactiveClasses

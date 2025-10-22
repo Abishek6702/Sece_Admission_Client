@@ -25,7 +25,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
     return null;
   };
 
-  const FileUpload = ({ label, file, fileUrl, error, onChange, name }) => {
+  const FileUpload = ({ label, file, fileUrl, error, onChange, name,required = false }) => {
     if (!inputRefs[name]) inputRefs[name] = useRef();
 
     const handleRemove = () => onChange(null);
@@ -53,7 +53,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
     return (
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">
-          {label} <span className="text-red-600">*</span>
+          {label}  {required && <span className="text-red-600">*</span>}
         </label>
 
         {file ? (
@@ -111,6 +111,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="Student Photo"
         name="studentPhoto"
+        required={true}
         file={getFileObject("studentPhoto")}
         fileUrl={getFileUrl("studentPhoto")}
         error={errors.studentPhoto}
@@ -138,6 +139,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="10th Mark Sheet"
         name="tenthMarkSheet"
+        required={true}
         file={getFileObject("tenthMarkSheet")}
         fileUrl={getFileUrl("tenthMarkSheet")}
         error={errors.tenthMarkSheet}
@@ -165,6 +167,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="Transfer Certificate"
         name="transferCertificate"
+        required={true}
         file={getFileObject("transferCertificate")}
         fileUrl={getFileUrl("transferCertificate")}
         error={errors.transferCertificate}
@@ -174,6 +177,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="Community Certificate"
         name="communityCertificate"
+        required={true}
         file={getFileObject("communityCertificate")}
         fileUrl={getFileUrl("communityCertificate")}
         error={errors.communityCertificate}
@@ -183,6 +187,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="Income Certificate"
         name="incomeCertificate"
+        required={true}
         file={getFileObject("incomeCertificate")}
         fileUrl={getFileUrl("incomeCertificate")}
         error={errors.incomeCertificate}
@@ -192,6 +197,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
       <FileUpload
         label="Aadhar Copy"
         name="aadharCopy"
+        required={true}
         file={getFileObject("aadharCopy")}
         fileUrl={getFileUrl("aadharCopy")}
         error={errors.aadharCopy}
@@ -214,6 +220,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
           <FileUpload
             label="Allotment Order"
             name="allotmentOrder"
+            required={true}
             file={getFileObject("allotmentOrder")}
             fileUrl={getFileUrl("allotmentOrder")}
             error={errors.allotmentOrder}
@@ -242,6 +249,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
         <FileUpload
           label="First Graduate Certificate"
           name="firstGraduateCertificate"
+          required={true}
           file={getFileObject("firstGraduateCertificate")}
           fileUrl={getFileUrl("firstGraduateCertificate")}
           error={errors.firstGraduateCertificate}

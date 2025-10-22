@@ -8,13 +8,14 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Download,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import nodata from "../../assets/no-data.svg";
 function FilterMenu({ options, selected, onChange, onClose, customContent }) {
   return (
-    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2">
+    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2 ">
       {customContent ? (
         customContent
       ) : (
@@ -105,35 +106,29 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     </div>
   );
 }
-
-export default function FinalizedListTable() {
+const RevisitedVisitorsTable = () => {
   const navigate = useNavigate();
   const [filterOpen, setFilterOpen] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [graduateFilter, setGraduateFilter] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
   const [cutOffFilter, setCutOffFilter] = useState({ from: "", to: "" });
-
+  const [departmentFilter, setDepartmentFilter] = useState(null);
   const [dateFilter, setDateFilter] = useState({ from: "", to: "" });
   const [search, setSearch] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState(null);
-  const [generating, setGenerating] = useState(false);
 
-  const rowsPerPage = 10;
+  const rowsPerPage = 6;
   const [data, setData] = useState([]);
   const categoryOptions = ["MBC", "BCM", "SCA", "SC", "ST", "OC", "BC"];
+  const courseOptions = ["B.E CSE", "B.E ECE", "B.E EEE", "B.E CCE"];
+
   const graduateOptions = ["Yes", "No"];
-  const statusOptions = ["Selected", "UserCreated"];
-  const cutOffRanges = [
-    { label: "190 - 200", min: 190, max: 200 },
-    { label: "150 - 190", min: 150, max: 190 },
-    { label: "100 - 150", min: 100, max: 150 },
-    { label: "0 - 100", min: 0, max: 100 },
-  ];
+  const statusOptions = ["Selected", "Pending", "Rejected"];
+
   // fetching table data
   useEffect(() => {
     setLoading(true);
@@ -156,9 +151,13 @@ export default function FinalizedListTable() {
       });
   }, []);
 
-  const allowedStatuses = ["Selected", "UserCreated"];
   // Filtered data by filters and also search data
   const filteredData = data.filter((d) => {
+    if (!d.revisited) return false;
+
+    const departmentMatch = departmentFilter
+      ? d.courseRequired?.includes(departmentFilter)
+      : true;
     const courseMatch = categoryFilter
       ? d.community?.includes(categoryFilter)
       : true;
@@ -168,10 +167,10 @@ export default function FinalizedListTable() {
         ? d.isFirstGraduate === true
         : d.isFirstGraduate === false
       : true;
-    // Replace "UserCreated" below with your actual custom status value if different
-    const statusMatch = allowedStatuses.includes(d.status);
 
-       const cutOffMatch =
+    const statusMatch = statusFilter ? d.status === statusFilter : true;
+
+    const cutOffMatch =
       (cutOffFilter.from !== ""
         ? d.twelfthMarks?.cutOff >= Number(cutOffFilter.from)
         : true) &&
@@ -192,6 +191,7 @@ export default function FinalizedListTable() {
 
     return (
       courseMatch &&
+      departmentMatch &&
       graduateMatch &&
       statusMatch &&
       cutOffMatch &&
@@ -216,6 +216,7 @@ export default function FinalizedListTable() {
   const clearFilters = () => {
     setCategoryFilter(null);
     setGraduateFilter(null);
+    setDepartmentFilter(null);
     setStatusFilter(null);
     setCutOffFilter({ from: "", to: "" });
     setDateFilter({ from: "", to: "" });
@@ -237,6 +238,15 @@ export default function FinalizedListTable() {
     }
   };
 
+  if (loading)
+    return (
+      <div className=" m-auto text-center md:mt-20">
+        <div className="loader m-auto text-center"></div>
+        <p className="mt-4">Loading...</p>
+      </div>
+    );
+  if (error) return <div>Error loading data: {error}</div>;
+
   const handleExport = async () => {
     let exportIds = [];
 
@@ -246,98 +256,42 @@ export default function FinalizedListTable() {
       exportIds = sortedData.map((row) => row._id);
     }
 
+    console.log("Exporting IDs:", exportIds);
+
     try {
-      setExporting(true);
-      const res = await fetch(
+      setLoading(true);
+
+      const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/export`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ids: exportIds }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ids: exportIds.length > 0 ? exportIds : null,
+          }),
         }
       );
 
-      if (!res.ok) throw new Error("Failed to export file");
+      if (!response.ok) throw new Error("Export failed");
 
-      const blob = await res.blob();
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "enquiries.xlsx";
-      link.click();
-      window.URL.revokeObjectURL(url);
 
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "enquiries.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
       toast.success("Export successful 🎉");
     } catch (err) {
+      console.error(err);
       toast.error("Export failed: " + err.message);
     } finally {
-      setExporting(false);
+      setLoading(false);
     }
   };
-
-  const handleGenerateUsers = async () => {
-    let generateIds = [];
-
-    if (selectedRows.length > 0) {
-      generateIds = currentRows
-        .filter(
-          (row) =>
-            selectedRows.includes(row._id) && row.status !== "UserCreated"
-        )
-        .map((row) => row._id);
-    } else {
-      generateIds = sortedData
-        .filter((row) => row.status !== "UserCreated")
-        .map((row) => row._id);
-    }
-
-    console.log(generateIds);
-    try {
-      setGenerating(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/create-from-enquiries`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ids: generateIds }),
-        }
-      );
-
-      if (!res.ok) throw new Error("Failed to generate users");
-
-      toast.success(`Users generated successfully 🎉`, {
-        onClose: () => window.location.reload(),
-      });
-    } catch (err) {
-      toast.error("Generation failed: " + err.message);
-    } finally {
-      setGenerating(false);
-    }
-  };
-  const validGenerateCount =
-    selectedRows.length > 0
-      ? currentRows.filter(
-          (row) =>
-            selectedRows.includes(row._id) && row.status !== "UserCreated"
-        ).length
-      : sortedData.filter((row) => row.status !== "UserCreated").length;
-
-  if (loading)
-    return (
-      <div className=" m-auto text-center md:mt-40">
-        <div className="loader m-auto text-center"></div>
-        <p className="mt-4">Loading...</p>
-      </div>
-    );
-  if (error) return <div>Error loading data: {error}</div>;
-
   return (
     <div>
-      <p className="text-2xl playfair mb-2">Finalized Enquiries</p>
       {/* Controls above table */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3  justify-between w-full">
@@ -366,79 +320,13 @@ export default function FinalizedListTable() {
               Clear Filter
             </button>
             <button
-              disabled={generating || validGenerateCount === 0}
-              onClick={handleGenerateUsers}
-              className="bg-[#0b56a4] text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer
-             disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {generating ? (
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8H4z"
-                    ></path>
-                  </svg>
-                  Generating...
-                </span>
-              ) : (
-                <>Generate Users ({validGenerateCount})</>
-              )}
-            </button>
-
-            <button
-              className={`bg-[#0b56a4] text-white px-4 py-1 rounded-lg flex items-center gap-2 cursor-pointer ${
-                exporting ? "opacity-60 cursor-not-allowed" : ""
-              }`}
+              className=" bg-[#0b56a4] text-white  px-4 py-1 rounded-lg flex items-center gap-2 cursor-pointer"
               onClick={handleExport}
-              disabled={exporting}
             >
-              {exporting ? (
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8H4z"
-                    ></path>
-                  </svg>
-                  Exporting...
-                </span>
-              ) : (
-                <>
-                  <Download className="w-4" />
-                  Export{" "}
-                  {selectedRows.length > 0 && (
-                    <span className="badge">({selectedRows.length})</span>
-                  )}
-                </>
+              <Download className="w-4" />
+              Export{" "}
+              {selectedRows.length > 0 && (
+                <span className="badge">({selectedRows.length})</span>
               )}
             </button>
           </div>
@@ -446,8 +334,8 @@ export default function FinalizedListTable() {
       </div>
 
       {/* Table with filters in headers */}
-      <div className="overflow-x-auto rounded-lg shadow-sm h-80">
-        <table className="min-w-full border-collapse bg-white">
+      <div className="overflow-x-auto rounded-lg shadow-sm ">
+        <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>
               <th className="px-5 py-3">
@@ -462,7 +350,6 @@ export default function FinalizedListTable() {
                 />
               </th>
               <th className="px-5 py-3  border-gray-300">Name</th>
-              {/* Course Filter */}
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
                 onClick={() =>
@@ -500,6 +387,44 @@ export default function FinalizedListTable() {
                   />
                 )}
               </th>
+
+              <th
+                className="px-5 py-3 relative border-gray-300 cursor-pointer"
+                onClick={() =>
+                  setFilterOpen(filterOpen === "course" ? null : "course")
+                }
+              >
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
+                  <span>Preferred Course</span>
+                  <svg
+                    className={`w-4 h-4 ${
+                      filterOpen === "course" ? "rotate-180" : "rotate-0"
+                    } transition-transform duration-300`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 8l4 4 4-4"
+                    />
+                  </svg>
+                </div>
+                {filterOpen === "course" && (
+                  <FilterMenu
+                    options={courseOptions}
+                    selected={departmentFilter}
+                    onChange={(val) => {
+                      setDepartmentFilter(val);
+                      setCurrentPage(1);
+                    }}
+                    onClose={() => setFilterOpen(null)}
+                  />
+                )}
+              </th>
               {/* Graduate Filter */}
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
@@ -507,7 +432,7 @@ export default function FinalizedListTable() {
                   setFilterOpen(filterOpen === "graduate" ? null : "graduate")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
                   <span>First Graduate</span>
                   <svg
                     className={`w-4 h-4  ${
@@ -540,12 +465,12 @@ export default function FinalizedListTable() {
               </th>
               {/* Cutoff Filter */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative  border-gray-300 cursor-pointer whitespace-nowrap"
                 onClick={() =>
                   setFilterOpen(filterOpen === "cutoff" ? null : "cutoff")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
+                <div className="flex items-center space-x-1 select-non whitespace-nowrape">
                   <span>Cut Off</span>
                   <svg
                     className={`w-4 h-4  ${
@@ -565,7 +490,7 @@ export default function FinalizedListTable() {
                   </svg>
                 </div>
                 {filterOpen === "cutoff" && (
-                 <FilterMenu
+                  <FilterMenu
                     customContent={
                       <div
                         className="flex flex-col space-y-2 p-3 bg-white rounded-md"
@@ -751,8 +676,9 @@ export default function FinalizedListTable() {
                 <td className="px-5 py-3  border-gray-200">
                   {row.studentName}
                 </td>
-                <td className="px-5 py-3  border-gray-200">
-                  {row.community}
+                <td className="px-5 py-3  border-gray-200">{row.community}</td>
+                <td className="px-5 py-3 border-gray-200 truncate">
+                  {row.courseRequired}
                 </td>
                 <td className="px-5 py-3 border-gray-200">
                   {row.isFirstGraduate ? "Yes" : "No"}
@@ -768,8 +694,10 @@ export default function FinalizedListTable() {
                 <td className="px-5 py-3  border-gray-200">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium
-      ${row.status === "UserCreated" ? "bg-green-100 text-green-700" : ""}
-      ${row.status === "Selected" ? "bg-yellow-100 text-yellow-700" : ""}
+      ${row.status === "Selected" ? "bg-green-100 text-green-700" : ""}
+      ${row.status === "Pending" ? "bg-yellow-100 text-yellow-700" : ""}
+      ${row.status === "UserCreated" ? "bg-blue-100 text-blue-700" : ""}
+
       ${row.status === "Rejected" ? "bg-red-100 text-red-700" : ""}`}
                   >
                     {row.status}
@@ -778,7 +706,7 @@ export default function FinalizedListTable() {
 
                 <td className="px-5 py-3 flex items-center space-x-2 justify-center">
                   <button
-                    onClick={() => navigate(`/admin/enquiry_list/${row._id}`)}
+                    onClick={() => navigate(`/admin/revisited_list/${row._id}`)}
                     className="p-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
                   >
                     <Eye size={14} />
@@ -790,7 +718,7 @@ export default function FinalizedListTable() {
               <tr>
                 <td
                   colSpan="8"
-                  className="text-center py-14 text-gray-500 text-lg "
+                  className="text-center py-10 text-gray-500 text-lg "
                 >
                   <img src={nodata} alt="" c className="w-[25%] m-auto" />
                   <p className="mt-4">No Data Found</p>
@@ -809,4 +737,6 @@ export default function FinalizedListTable() {
       />
     </div>
   );
-}
+};
+
+export default RevisitedVisitorsTable;

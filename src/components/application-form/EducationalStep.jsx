@@ -1,7 +1,7 @@
 import React from "react";
 
 const courseEntryTypes = ["I Year B.E / B.Tech", "Lateral Entry", "I Year M.E"];
-const preferredCourses = ["B.Tech IT", "B.E CSE", "B.E ECE", "B.Com", "MBA"];
+const preferredCourses = ["B.E CSE", "B.E ECE", "B.E AI-ML", "B.E Cyber Security", "B.E CCE","B.E EEE","B.E Mech","B.Tech IT","B.Tech CSBS","B.Tech AI & DS"];
 const hostelOptions = ["Hostel", "DayScholar"];
 const yesNoOptions = ["Yes", "No"];
 const departments = ["IT", "CSE", "ECE", "EEE", "Mechanical", "Civil", "MBA"];
@@ -147,7 +147,7 @@ const EducationalStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
           {/* Sibling Name */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Sibling Name <span className="text-red-600">*</span>
+              Sibling Name 
             </label>
             <input
               type="text"
@@ -171,7 +171,7 @@ const EducationalStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
           {/* Sibling Roll No */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Sibling Roll No <span className="text-red-600">*</span>
+              Sibling Roll No 
             </label>
             <input
               type="text"
@@ -195,7 +195,7 @@ const EducationalStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
           {/* Sibling Department */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Sibling Department <span className="text-red-600">*</span>
+              Sibling Department 
             </label>
             <select
               value={data.siblingDetails?.department || ""}
@@ -224,7 +224,7 @@ const EducationalStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
           {/* Year of Admission */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Year of Admission <span className="text-red-600">*</span>
+              Year of Admission
             </label>
             <select
               value={data.siblingDetails?.yearOfAdmission || ""}

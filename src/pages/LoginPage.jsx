@@ -39,7 +39,7 @@ export default function Login() {
       localStorage.setItem("token", token);
       toast.success("Login successful!");
 
-      if (role.toLowerCase() === "admin") navigate("/admin");
+      if (role.toLowerCase() === "admin" || "staff") navigate("/admin");
       else if (role.toLowerCase() === "student") {
         if (firstTimeLogin) navigate("/application");
         else navigate("/dashboard");

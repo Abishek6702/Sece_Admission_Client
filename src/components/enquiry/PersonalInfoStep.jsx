@@ -1,11 +1,75 @@
 import { useState, useRef, useEffect } from "react";
 
 const districts = [
-  "Chennai", "Coimbatore", "Madurai", "Salem", "Tiruchirappalli", // Add all needed districts
+  "Ariyalur",
+  "Chengalpattu",
+  "Chennai",
+  "Coimbatore",
+  "Cuddalore",
+  "Dharmapuri",
+  "Dindigul",
+  "Erode",
+  "Kallakurichi",
+  "Kanchipuram",
+  "Kanyakumari",
+  "Karur",
+  "Krishnagiri",
+  "Madurai",
+  "Mayiladuthurai",
+  "Nagapattinam",
+  "Namakkal",
+  "Nilgiris",
+  "Perambalur",
+  "Pudukkottai",
+  "Ramanathapuram",
+  "Ranipet",
+  "Salem",
+  "Sivagangai",
+  "Tenkasi",
+  "Thanjavur",
+  "Theni",
+  "Thoothukudi",
+  "Tiruchirappalli",
+  "Tirunelveli",
+  "Tirupattur",
+  "Tiruppur",
+  "Tiruvallur",
+  "Tiruvannamalai",
+  "Tiruvarur",
+  "Vellore",
+  "Viluppuram",
+  "Virudhunagar",
 ];
 
 const states = [
-  "Tamil Nadu", "Kerala", "Karnataka", "Andhra Pradesh", "Telangana", // Add needed states
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
 ];
 
 export default function PersonalInfoStep({ data, errors, onChange }) {
@@ -141,7 +205,9 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
         {errors.street && <span className="text-red-500">{errors.street}</span>}
       </div>
       <div>
-        <label className="font-semibold mb-1 block text-[#282526]">Taluk <span className="text-red-600">*</span></label>
+        <label className="font-semibold mb-1 block text-[#282526]">
+          Taluk <span className="text-red-600">*</span>
+        </label>
         <input
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
           name="address.taluk"
@@ -157,12 +223,18 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
         </label>
         <div
           className={`flex items-center px-2 py-2 rounded-lg border ${
-            openDistrict ? "border-[#0B56A4] border-2 bg-white" : "border-gray-300 bg-[#f6f6f6]"
+            openDistrict
+              ? "border-[#0B56A4] border-2 bg-white"
+              : "border-gray-300 bg-[#f6f6f6]"
           } text-sm cursor-pointer`}
           tabIndex={0}
           onClick={() => setOpenDistrict((o) => !o)}
         >
-          <span className={`text-gray-800 ${!data.address.district ? "text-gray-400" : ""}`}>
+          <span
+            className={`text-gray-800 ${
+              !data.address.district ? "text-gray-400" : ""
+            }`}
+          >
             {data.address.district || "Search and select district"}
           </span>
           <span className="ml-auto text-gray-400">▼</span>
@@ -183,7 +255,9 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
               <div
                 key={district}
                 className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                  district === data.address.district ? "bg-[#e0e7ef] font-semibold" : ""
+                  district === data.address.district
+                    ? "bg-[#e0e7ef] font-semibold"
+                    : ""
                 }`}
                 onClick={() => {
                   onChange("address.district", district);
@@ -196,7 +270,9 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
             ))}
           </div>
         )}
-        {errors.district && <span className="text-red-500">{errors.district}</span>}
+        {errors.district && (
+          <span className="text-red-500">{errors.district}</span>
+        )}
       </div>
 
       {/* State dropdown */}
@@ -206,12 +282,18 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
         </label>
         <div
           className={`flex items-center px-2 py-2 rounded-lg border ${
-            openState ? "border-[#0B56A4] border-2 bg-white" : "border-gray-300 bg-[#f6f6f6]"
+            openState
+              ? "border-[#0B56A4] border-2 bg-white"
+              : "border-gray-300 bg-[#f6f6f6]"
           } text-sm cursor-pointer`}
           tabIndex={0}
           onClick={() => setOpenState((o) => !o)}
         >
-          <span className={`text-gray-800 ${!data.address.state ? "text-gray-400" : ""}`}>
+          <span
+            className={`text-gray-800 ${
+              !data.address.state ? "text-gray-400" : ""
+            }`}
+          >
             {data.address.state || "Search and select state"}
           </span>
           <span className="ml-auto text-gray-400">▼</span>
@@ -232,7 +314,9 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
               <div
                 key={state}
                 className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                  state === data.address.state ? "bg-[#e0e7ef] font-semibold" : ""
+                  state === data.address.state
+                    ? "bg-[#e0e7ef] font-semibold"
+                    : ""
                 }`}
                 onClick={() => {
                   onChange("address.state", state);
@@ -282,7 +366,6 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
           <option value="SCA">SCA</option>
           <option value="SC">SC</option>
           <option value="ST">ST</option>
-
         </select>
         {errors.community && (
           <span className="text-red-500">{errors.community}</span>
@@ -306,7 +389,7 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
       </div>
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">
-          Student Mobile <span className="text-red-600">*</span>
+          Student Mobile 
         </label>
         <input
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -352,7 +435,7 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
       </div>
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">
-          Mother Email 
+          Mother Email
         </label>
         <input
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"

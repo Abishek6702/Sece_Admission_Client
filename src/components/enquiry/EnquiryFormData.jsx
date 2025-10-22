@@ -6,7 +6,7 @@ import CourseDataStep from "./CourseDataStep";
 import logo from "../../assets/sece-logo.svg";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const titles = [
   {
@@ -63,12 +63,13 @@ const initialData = {
   dateOfVisit: new Date().toISOString().split("T")[0],
   signature: "",
   confirmation: "",
+  courseEntryType: "",
 };
-function validate(data,step){
-  return{};
+function validate(data, step) {
+  return {};
 }
 
-// function validate(data, step) {
+// function validate(data, step, linkedin) {
 //   const errors = {};
 //   const mobileRegex = /^[1-9][0-9]{9}$/;
 //   // Personal Info validation
@@ -86,12 +87,6 @@ function validate(data,step){
 //     if (!data.address.pincode) errors.pincode = "Pincode required";
 //     if (!data.community) errors.community = "Community required";
 //     if (!data.studentEmail) errors.studentEmail = "Student Email required";
-//     if (!data.studentMobile) {
-//       errors.studentMobile = "Student Mobile required";
-//     } else if (!mobileRegex.test(data.studentMobile)) {
-//       errors.studentMobile =
-//         "Enter a valid 10-digit mobile number (not starting with 0)";
-//     }
 
 //     if (!data.fatherMobile) {
 //       errors.fatherMobile = "Father Mobile required";
@@ -114,51 +109,51 @@ function validate(data,step){
 //     if (!data.twelfthSchoolAddress)
 //       errors.twelfthSchoolAddress = "School address required";
 //     if (!data.twelfthSchoolBoard) errors.twelfthSchoolBoard = "Board required";
-//     if (!data.twelfthRegisterNo)
-//       errors.twelfthRegisterNo = "Register No required";
-//     if (!data.twelfthMarks.maths) {
-//       errors.maths = "Maths marks required";
-//     } else if (
-//       isNaN(data.twelfthMarks.maths) ||
-//       data.twelfthMarks.maths > 100
-//     ) {
-//       errors.maths = "Should not exceed 100";
-//     }
+//     // if (!data.twelfthRegisterNo)
+//     //   errors.twelfthRegisterNo = "Register No required";
+//     // if (!data.twelfthMarks.maths) {
+//     //   errors.maths = "Maths marks required";
+//     // } else if (
+//     //   isNaN(data.twelfthMarks.maths) ||
+//     //   data.twelfthMarks.maths > 100
+//     // ) {
+//     //   errors.maths = "Should not exceed 100";
+//     // }
 
-//     if (!data.twelfthMarks.physics) {
-//       errors.physics = "Physics marks required";
-//     } else if (
-//       isNaN(data.twelfthMarks.physics) ||
-//       data.twelfthMarks.physics > 100
-//     ) {
-//       errors.physics = "Should not exceed 100";
-//     }
+//     // if (!data.twelfthMarks.physics) {
+//     //   errors.physics = "Physics marks required";
+//     // } else if (
+//     //   isNaN(data.twelfthMarks.physics) ||
+//     //   data.twelfthMarks.physics > 100
+//     // ) {
+//     //   errors.physics = "Should not exceed 100";
+//     // }
 
-//     if (!data.twelfthMarks.chemistry) {
-//       errors.chemistry = "Chemistry marks required";
-//     } else if (
-//       isNaN(data.twelfthMarks.chemistry) ||
-//       data.twelfthMarks.chemistry > 100
-//     ) {
-//       errors.chemistry = "Should not exceed 100";
-//     }
+//     // if (!data.twelfthMarks.chemistry) {
+//     //   errors.chemistry = "Chemistry marks required";
+//     // } else if (
+//     //   isNaN(data.twelfthMarks.chemistry) ||
+//     //   data.twelfthMarks.chemistry > 100
+//     // ) {
+//     //   errors.chemistry = "Should not exceed 100";
+//     // }
 
-//     if (!data.twelfthMarks.total) {
-//       errors.total = "Total required";
-//     } else if (
-//       isNaN(data.twelfthMarks.total > 600) ||
-//       data.twelfthMarks.total > 600
-//     ) {
-//       errors.total = "Should not exceed 600";
-//     }
-//     if (!data.twelfthMarks.cutOff) {
-//       errors.cutOff = "Cut Off required";
-//     } else if (
-//       isNaN(data.twelfthMarks.cutOff > 200) ||
-//       data.twelfthMarks.cutOff > 200
-//     ) {
-//       errors.cutOff = "Should not exceed 200";
-//     }
+//     // if (!data.twelfthMarks.total) {
+//     //   errors.total = "Total required";
+//     // } else if (
+//     //   isNaN(data.twelfthMarks.total > 600) ||
+//     //   data.twelfthMarks.total > 600
+//     // ) {
+//     //   errors.total = "Should not exceed 600";
+//     // }
+//     // if (!data.twelfthMarks.cutOff) {
+//     //   errors.cutOff = "Cut Off required";
+//     // } else if (
+//     //   isNaN(data.twelfthMarks.cutOff > 200) ||
+//     //   data.twelfthMarks.cutOff > 200
+//     // ) {
+//     //   errors.cutOff = "Should not exceed 200";
+//     // }
 //     if (!data.tenthSchoolBoard) errors.tenthSchoolBoard = "10th Board required";
 //     if (!data.tenthMarks) {
 //       errors.tenthMarks = "10th marks required";
@@ -173,6 +168,9 @@ function validate(data,step){
 //     if (!data.signature) errors.signature = "Signature is required";
 //     if (!data.confirmation)
 //       errors.confirmation = "Please confirm all data are correct";
+//     if (!linkedin) {
+//       errors.linkedin = "Please select Yes or No for LinkedIn availability";
+//     }
 //   }
 
 //   return errors;
@@ -184,6 +182,11 @@ export default function EnquiryFormData() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedOption = location.state?.selectedOption;
+  console.log("Selected Option from location.state:", selectedOption);
+  const [linkedin, setLinkedin] = useState("");
+  const [linkedinError, setLinkedinError] = useState("");
 
   const handleChange = (name, value) => {
     if (name.includes(".")) {
@@ -203,7 +206,8 @@ export default function EnquiryFormData() {
 
   const handleStepSubmit = async (e) => {
     e.preventDefault();
-    const currentErrors = validate(data, step);
+    const currentErrors = validate(data, step, linkedin);
+
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length === 0) {
@@ -211,8 +215,11 @@ export default function EnquiryFormData() {
         setStep(step + 1);
         setErrors({});
       } else {
-        const { confirmation, ...payload } = data;
-        console.log("Data Submitted: ", payload);
+        const { confirmation, ...restData } = data;
+        const payload = {
+          ...restData,
+          courseEntryType: selectedOption,
+        };
 
         try {
           setLoading(true);
@@ -232,7 +239,9 @@ export default function EnquiryFormData() {
 
           toast.success("Enquiry submitted successfully!");
           console.log(responseData.pdfUrl);
-          navigate("/enquiry-thank-you");
+          navigate("/enquiry-thank-you", {
+            state: { pdfUrl: responseData.pdfUrl },
+          });
         } catch (err) {
           console.log(err.message);
           toast.error(err.message || "Something went wrong!");
@@ -246,8 +255,12 @@ export default function EnquiryFormData() {
   return (
     <div className="max-w-4xl mx-auto ">
       <img src={logo} alt="" className="w-40 mb-4 lg:hidden" />
-      <h2 className="text-2xl font-bold playfair">{titles[step].heading}</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold playfair">{titles[step].heading}</h2>
+        <p className="">{selectedOption}</p>
+      </div>
       <p className="text-gray-500 mb-4">{titles[step].description}</p>
+
       <Stepper currentStep={step} />
       <form onSubmit={handleStepSubmit}>
         {step === 0 && (
@@ -265,8 +278,16 @@ export default function EnquiryFormData() {
           />
         )}
         {step === 2 && (
-          <CourseDataStep data={data} errors={errors} onChange={handleChange} />
+          <CourseDataStep
+            data={data}
+            errors={errors}
+            onChange={handleChange}
+            linkedin={linkedin}
+            setLinkedin={setLinkedin}
+            linkedinError={errors.linkedin}
+          />
         )}
+
         <div className="flex justify-end gap-4 mt-8">
           {step > 0 && (
             <button

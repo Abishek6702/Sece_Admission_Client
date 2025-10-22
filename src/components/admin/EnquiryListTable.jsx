@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import nodata from "../../assets/no-data.svg";
+import ScholorshipModal from "./ScholorshipModal";
 function FilterMenu({ options, selected, onChange, onClose, customContent }) {
   return (
     <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2 ">
@@ -112,7 +113,8 @@ export default function CourseTable() {
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [graduateFilter, setGraduateFilter] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
-  const [cutOffFilter, setCutOffFilter] = useState(null);
+  const [cutOffFilter, setCutOffFilter] = useState({ from: "", to: "" });
+  const [extraFields, setExtraFields] = useState({});
   const [dateFilter, setDateFilter] = useState({ from: "", to: "" });
   const [search, setSearch] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
@@ -120,22 +122,13 @@ export default function CourseTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [scholorModalOpen, setScholorModalOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const [newStatus, setNewStatus] = useState(null);
-
+  const [modalActionStatus, setModalActionStatus] = useState("");
   const rowsPerPage = 6;
   const [data, setData] = useState([]);
-  const categoryOptions = [
-    "B.E ECE",
-    "B.E CSE",
-    "B.E EEE",
-    "B.E CCE",
-    "B.E AI-ML",
-    "B.E Cyber Security",
-    "B.E Mech",
-    "B.Tech IT",
-    "B.Tech CSBS",
-    "B.Tech AI & DS",
-  ];
+  const categoryOptions = ["MBC", "BCM", "SCA", "SC", "ST", "OC", "BC"];
   const graduateOptions = ["Yes", "No"];
   const statusOptions = ["Selected", "Pending", "Rejected"];
   const cutOffRanges = [
@@ -167,7 +160,7 @@ export default function CourseTable() {
   }, []);
 
   // chnaging status and loccal setting it
-  const changeStatus = async (id, newStatus) => {
+  const changeStatus = async (id, newStatus, extraFields = {}) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${id}/status`,
@@ -176,7 +169,7 @@ export default function CourseTable() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status: newStatus, ...extraFields }),
         }
       );
 
@@ -236,7 +229,7 @@ export default function CourseTable() {
   // Filtered data by filters and also search data
   const filteredData = data.filter((d) => {
     const courseMatch = categoryFilter
-      ? d.courseRequired?.includes(categoryFilter)
+      ? d.community?.includes(categoryFilter)
       : true;
 
     const graduateMatch = graduateFilter
@@ -247,10 +240,13 @@ export default function CourseTable() {
 
     const statusMatch = statusFilter ? d.status === statusFilter : true;
 
-    const cutOffMatch = cutOffFilter
-      ? d.twelfthMarks?.cutOff >= cutOffFilter.min &&
-        d.twelfthMarks?.cutOff <= cutOffFilter.max
-      : true;
+    const cutOffMatch =
+      (cutOffFilter.from !== ""
+        ? d.twelfthMarks?.cutOff >= Number(cutOffFilter.from)
+        : true) &&
+      (cutOffFilter.to !== ""
+        ? d.twelfthMarks?.cutOff <= Number(cutOffFilter.to)
+        : true);
 
     const dateMatch =
       dateFilter.from || dateFilter.to
@@ -290,7 +286,7 @@ export default function CourseTable() {
     setCategoryFilter(null);
     setGraduateFilter(null);
     setStatusFilter(null);
-    setCutOffFilter(null);
+    setCutOffFilter({ from: "", to: "" });
     setDateFilter({ from: "", to: "" });
     setSearch("");
     setCurrentPage(1);
@@ -363,6 +359,14 @@ export default function CourseTable() {
     }
   };
 
+  const handleScholarshipSave = (data) => {
+    changeStatus(selectedId, modalActionStatus, data);
+    setExtraFields(data);
+    setScholorModalOpen(false);
+    setSelectedId(null);
+    setModalActionStatus("");
+  };
+
   return (
     <div>
       {/* Controls above table */}
@@ -382,14 +386,14 @@ export default function CourseTable() {
             <Search className="absolute top-2 right-2 text-gray-400 w-4" />
           </div>
           <div className=" flex gap-4">
-            {selectedRows.length > 0 && (
+            {/* {selectedRows.length > 0 && (
               <button
                 className="px-4 py-2 rounded-lg  border border-[#0b56a4] text-[#0b56a4] cursor-pointer"
                 onClick={() => setModalOpen(true)}
               >
                 Change Status ({selectedRows.length})
               </button>
-            )}
+            )} */}
             <button
               onClick={() => {
                 clearFilters();
@@ -523,7 +527,7 @@ export default function CourseTable() {
 
       {/* Table with filters in headers */}
       <div className="overflow-x-auto rounded-lg shadow-sm ">
-        <table className="min-w-full border-collapse bg-white">
+        <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>
               <th className="px-5 py-3">
@@ -546,7 +550,7 @@ export default function CourseTable() {
                 }
               >
                 <div className="flex items-center space-x-1 select-none">
-                  <span>Course</span>
+                  <span>Community</span>
                   <svg
                     className={`w-4 h-4  ${
                       filterOpen === "category" ? "rotate-180" : "rotate-0"
@@ -642,13 +646,52 @@ export default function CourseTable() {
                 </div>
                 {filterOpen === "cutoff" && (
                   <FilterMenu
-                    options={cutOffRanges.map((r) => r.label)}
-                    selected={cutOffFilter?.label || null}
-                    onChange={(label) => {
-                      const range = cutOffRanges.find((r) => r.label === label);
-                      setCutOffFilter(range || null);
-                      setCurrentPage(1);
-                    }}
+                    customContent={
+                      <div
+                        className="flex flex-col space-y-2 p-3 bg-white rounded-md"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <label className="text-sm text-gray-800 font-medium">
+                          From
+                        </label>
+                        <input
+                          type="number"
+                          value={cutOffFilter.from}
+                          placeholder="Enter min cut off"
+                          onChange={(e) => {
+                            setCutOffFilter((prev) => ({
+                              ...prev,
+                              from: e.target.value,
+                            }));
+                          }}
+                          className="rounded px-2 py-1 border border-gray-400 text-sm bg-gray-50 text-gray-900"
+                        />
+                        <label className="text-sm text-gray-800 font-medium">
+                          To
+                        </label>
+                        <input
+                          type="number"
+                          value={cutOffFilter.to}
+                          placeholder="Enter max cut off"
+                          onChange={(e) => {
+                            setCutOffFilter((prev) => ({
+                              ...prev,
+                              to: e.target.value,
+                            }));
+                          }}
+                          className="border border-gray-400 rounded px-2 py-1 text-sm bg-gray-50 text-gray-900"
+                        />
+                        <button
+                          className="mt-2 bg-[#0b56a4] text-white px-2 py-1 rounded text-sm"
+                          onClick={() => {
+                            setFilterOpen(null);
+                            setCurrentPage(1);
+                          }}
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    }
                     onClose={() => setFilterOpen(null)}
                   />
                 )}
@@ -788,9 +831,7 @@ export default function CourseTable() {
                 <td className="px-5 py-3  border-gray-200">
                   {row.studentName}
                 </td>
-                <td className="px-5 py-3  border-gray-200">
-                  {row.courseRequired}
-                </td>
+                <td className="px-5 py-3  border-gray-200">{row.community}</td>
                 <td className="px-5 py-3 border-gray-200">
                   {row.isFirstGraduate ? "Yes" : "No"}
                 </td>
@@ -821,7 +862,11 @@ export default function CourseTable() {
                       {/* Approve / Tick */}
                       <button
                         className="p-1.5 rounded-full bg-green-100 text-green-600 hover:bg-green-200"
-                        onClick={() => changeStatus(row._id, "Selected")}
+                        onClick={() => {
+                          setSelectedId(row._id);
+                          setModalActionStatus("Selected");
+                          setScholorModalOpen(true);
+                        }}
                       >
                         <Check size={14} />
                       </button>
@@ -829,7 +874,11 @@ export default function CourseTable() {
                       {/* Reject / X */}
                       <button
                         className="p-1.5 rounded-full bg-red-100 text-red-600 hover:bg-red-200"
-                        onClick={() => changeStatus(row._id, "Rejected")}
+                        onClick={() => {
+                          setSelectedId(row._id);
+                          setModalActionStatus("Rejected");
+                          setScholorModalOpen(true);
+                        }}
                       >
                         <X size={14} />
                       </button>
@@ -859,6 +908,15 @@ export default function CourseTable() {
           </tbody>
         </table>
       </div>
+      {scholorModalOpen && (
+        <div className="fixed inset-0 tint flex items-center justify-center z-50 ">
+          <ScholorshipModal
+            setScholorModalOpen={setScholorModalOpen}
+            onSave={handleScholarshipSave}
+            status={modalActionStatus}
+          />
+        </div>
+      )}
 
       {/* Pagination controls */}
       <Pagination

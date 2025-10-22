@@ -1,3 +1,6 @@
+
+
+
 import { useEffect, useState } from "react";
 import {
   Check,
@@ -8,13 +11,14 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Download,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import nodata from "../../assets/no-data.svg";
 function FilterMenu({ options, selected, onChange, onClose, customContent }) {
   return (
-    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2">
+    <div className="absolute top-full mt-1 w-52 bg-white border border-gray-200 shadow-lg rounded-md z-10 p-2 ">
       {customContent ? (
         customContent
       ) : (
@@ -105,35 +109,28 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     </div>
   );
 }
-
-export default function FinalizedListTable() {
+const NonScholarshipListTable = () => {
   const navigate = useNavigate();
   const [filterOpen, setFilterOpen] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState(null);
   const [graduateFilter, setGraduateFilter] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
-  const [cutOffFilter, setCutOffFilter] = useState({ from: "", to: "" });
 
-  const [dateFilter, setDateFilter] = useState({ from: "", to: "" });
   const [search, setSearch] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState(null);
-  const [generating, setGenerating] = useState(false);
 
-  const rowsPerPage = 10;
+
+  const rowsPerPage = 6;
   const [data, setData] = useState([]);
   const categoryOptions = ["MBC", "BCM", "SCA", "SC", "ST", "OC", "BC"];
+ 
+
   const graduateOptions = ["Yes", "No"];
-  const statusOptions = ["Selected", "UserCreated"];
-  const cutOffRanges = [
-    { label: "190 - 200", min: 190, max: 200 },
-    { label: "150 - 190", min: 150, max: 190 },
-    { label: "100 - 150", min: 100, max: 150 },
-    { label: "0 - 100", min: 0, max: 100 },
-  ];
+  const statusOptions = ["Selected", "Pending", "Rejected"];
+  
   // fetching table data
   useEffect(() => {
     setLoading(true);
@@ -156,47 +153,36 @@ export default function FinalizedListTable() {
       });
   }, []);
 
-  const allowedStatuses = ["Selected", "UserCreated"];
   // Filtered data by filters and also search data
   const filteredData = data.filter((d) => {
+    //
     const courseMatch = categoryFilter
       ? d.community?.includes(categoryFilter)
       : true;
 
     const graduateMatch = graduateFilter
       ? graduateFilter === "Yes"
-        ? d.isFirstGraduate === true
-        : d.isFirstGraduate === false
+        ? d.hasScholarship === true
+        : d.hasScholarship === false
       : true;
-    // Replace "UserCreated" below with your actual custom status value if different
-    const statusMatch = allowedStatuses.includes(d.status);
 
-       const cutOffMatch =
-      (cutOffFilter.from !== ""
-        ? d.twelfthMarks?.cutOff >= Number(cutOffFilter.from)
-        : true) &&
-      (cutOffFilter.to !== ""
-        ? d.twelfthMarks?.cutOff <= Number(cutOffFilter.to)
-        : true);
-
-    const dateMatch =
-      dateFilter.from || dateFilter.to
-        ? (!dateFilter.from ||
-            new Date(d.dateOfVisit) >= new Date(dateFilter.from)) &&
-          (!dateFilter.to || new Date(d.dateOfVisit) <= new Date(dateFilter.to))
-        : true;
+    const statusMatch = statusFilter ? d.status === statusFilter : true;
 
     const searchMatch = search
       ? d.studentName.toLowerCase().includes(search.toLowerCase())
       : true;
 
+    const hasScholarshipMatch = d.hasScholarship === false;
+
     return (
       courseMatch &&
+      // departmentMatch &&
       graduateMatch &&
       statusMatch &&
-      cutOffMatch &&
-      dateMatch &&
-      searchMatch
+      // cutOffMatch &&
+      // dateMatch &&
+      searchMatch &&
+      hasScholarshipMatch
     );
   });
 
@@ -216,9 +202,10 @@ export default function FinalizedListTable() {
   const clearFilters = () => {
     setCategoryFilter(null);
     setGraduateFilter(null);
+    // setDepartmentFilter(null);
     setStatusFilter(null);
-    setCutOffFilter({ from: "", to: "" });
-    setDateFilter({ from: "", to: "" });
+    // setCutOffFilter({ from: "", to: "" });
+    // setDateFilter({ from: "", to: "" });
     setSearch("");
     setCurrentPage(1);
   };
@@ -237,6 +224,15 @@ export default function FinalizedListTable() {
     }
   };
 
+  if (loading)
+    return (
+      <div className=" m-auto text-center md:mt-20">
+        <div className="loader m-auto text-center"></div>
+        <p className="mt-4">Loading...</p>
+      </div>
+    );
+  if (error) return <div>Error loading data: {error}</div>;
+
   const handleExport = async () => {
     let exportIds = [];
 
@@ -246,98 +242,42 @@ export default function FinalizedListTable() {
       exportIds = sortedData.map((row) => row._id);
     }
 
+    console.log("Exporting IDs:", exportIds);
+
     try {
-      setExporting(true);
-      const res = await fetch(
+      setLoading(true);
+
+      const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/export`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ids: exportIds }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ids: exportIds.length > 0 ? exportIds : null,
+          }),
         }
       );
 
-      if (!res.ok) throw new Error("Failed to export file");
+      if (!response.ok) throw new Error("Export failed");
 
-      const blob = await res.blob();
+      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "enquiries.xlsx";
-      link.click();
-      window.URL.revokeObjectURL(url);
 
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "enquiries.xlsx";
+      a.click();
+      window.URL.revokeObjectURL(url);
       toast.success("Export successful 🎉");
     } catch (err) {
+      console.error(err);
       toast.error("Export failed: " + err.message);
     } finally {
-      setExporting(false);
+      setLoading(false);
     }
   };
-
-  const handleGenerateUsers = async () => {
-    let generateIds = [];
-
-    if (selectedRows.length > 0) {
-      generateIds = currentRows
-        .filter(
-          (row) =>
-            selectedRows.includes(row._id) && row.status !== "UserCreated"
-        )
-        .map((row) => row._id);
-    } else {
-      generateIds = sortedData
-        .filter((row) => row.status !== "UserCreated")
-        .map((row) => row._id);
-    }
-
-    console.log(generateIds);
-    try {
-      setGenerating(true);
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/auth/create-from-enquiries`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ids: generateIds }),
-        }
-      );
-
-      if (!res.ok) throw new Error("Failed to generate users");
-
-      toast.success(`Users generated successfully 🎉`, {
-        onClose: () => window.location.reload(),
-      });
-    } catch (err) {
-      toast.error("Generation failed: " + err.message);
-    } finally {
-      setGenerating(false);
-    }
-  };
-  const validGenerateCount =
-    selectedRows.length > 0
-      ? currentRows.filter(
-          (row) =>
-            selectedRows.includes(row._id) && row.status !== "UserCreated"
-        ).length
-      : sortedData.filter((row) => row.status !== "UserCreated").length;
-
-  if (loading)
-    return (
-      <div className=" m-auto text-center md:mt-40">
-        <div className="loader m-auto text-center"></div>
-        <p className="mt-4">Loading...</p>
-      </div>
-    );
-  if (error) return <div>Error loading data: {error}</div>;
-
   return (
     <div>
-      <p className="text-2xl playfair mb-2">Finalized Enquiries</p>
       {/* Controls above table */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3  justify-between w-full">
@@ -366,79 +306,13 @@ export default function FinalizedListTable() {
               Clear Filter
             </button>
             <button
-              disabled={generating || validGenerateCount === 0}
-              onClick={handleGenerateUsers}
-              className="bg-[#0b56a4] text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer
-             disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {generating ? (
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8H4z"
-                    ></path>
-                  </svg>
-                  Generating...
-                </span>
-              ) : (
-                <>Generate Users ({validGenerateCount})</>
-              )}
-            </button>
-
-            <button
-              className={`bg-[#0b56a4] text-white px-4 py-1 rounded-lg flex items-center gap-2 cursor-pointer ${
-                exporting ? "opacity-60 cursor-not-allowed" : ""
-              }`}
+              className=" bg-[#0b56a4] text-white  px-4 py-1 rounded-lg flex items-center gap-2 cursor-pointer"
               onClick={handleExport}
-              disabled={exporting}
             >
-              {exporting ? (
-                <span className="flex items-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8H4z"
-                    ></path>
-                  </svg>
-                  Exporting...
-                </span>
-              ) : (
-                <>
-                  <Download className="w-4" />
-                  Export{" "}
-                  {selectedRows.length > 0 && (
-                    <span className="badge">({selectedRows.length})</span>
-                  )}
-                </>
+              <Download className="w-4" />
+              Export{" "}
+              {selectedRows.length > 0 && (
+                <span className="badge">({selectedRows.length})</span>
               )}
             </button>
           </div>
@@ -446,8 +320,8 @@ export default function FinalizedListTable() {
       </div>
 
       {/* Table with filters in headers */}
-      <div className="overflow-x-auto rounded-lg shadow-sm h-80">
-        <table className="min-w-full border-collapse bg-white">
+      <div className="overflow-x-auto rounded-lg shadow-sm ">
+        <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>
               <th className="px-5 py-3">
@@ -462,7 +336,6 @@ export default function FinalizedListTable() {
                 />
               </th>
               <th className="px-5 py-3  border-gray-300">Name</th>
-              {/* Course Filter */}
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
                 onClick={() =>
@@ -500,15 +373,18 @@ export default function FinalizedListTable() {
                   />
                 )}
               </th>
+
+              {/* Replace "Preferred Course" header */}
+
               {/* Graduate Filter */}
-              <th
+              {/* <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
                 onClick={() =>
                   setFilterOpen(filterOpen === "graduate" ? null : "graduate")
                 }
               >
-                <div className="flex items-center space-x-1 select-none">
-                  <span>First Graduate</span>
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
+                  <span>Scholorship </span>
                   <svg
                     className={`w-4 h-4  ${
                       filterOpen === "graduate" ? "rotate-180" : "rotate-0"
@@ -538,161 +414,44 @@ export default function FinalizedListTable() {
                   />
                 )}
               </th>
+              <th
+                className="px-5 py-3 relative border-gray-300 cursor-pointer"
+                onClick={() =>
+                  setFilterOpen(filterOpen === "amount" ? null : "amount")
+                }
+              >
+                <div className="flex items-center space-x-1 select-none whitespace-nowrap">
+                  <span>Scholarship Amount</span>
+                </div>
+              </th> */}
               {/* Cutoff Filter */}
+              {/* Replace "Cut Off" header with "Fees Paid" */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative border-gray-300 cursor-pointer"
                 onClick={() =>
-                  setFilterOpen(filterOpen === "cutoff" ? null : "cutoff")
+                  setFilterOpen(filterOpen === "feesPaid" ? null : "feesPaid")
                 }
               >
                 <div className="flex items-center space-x-1 select-none">
-                  <span>Cut Off</span>
-                  <svg
-                    className={`w-4 h-4  ${
-                      filterOpen === "cutoff" ? "rotate-180" : "rotate-0"
-                    } transition-transform duration-300`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 8l4 4 4-4"
-                    />
-                  </svg>
+                  <span>Fees Paid</span>
                 </div>
-                {filterOpen === "cutoff" && (
-                 <FilterMenu
-                    customContent={
-                      <div
-                        className="flex flex-col space-y-2 p-3 bg-white rounded-md"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <label className="text-sm text-gray-800 font-medium">
-                          From
-                        </label>
-                        <input
-                          type="number"
-                          value={cutOffFilter.from}
-                          placeholder="Enter min cut off"
-                          onChange={(e) => {
-                            setCutOffFilter((prev) => ({
-                              ...prev,
-                              from: e.target.value,
-                            }));
-                          }}
-                          className="rounded px-2 py-1 border border-gray-400 text-sm bg-gray-50 text-gray-900"
-                        />
-                        <label className="text-sm text-gray-800 font-medium">
-                          To
-                        </label>
-                        <input
-                          type="number"
-                          value={cutOffFilter.to}
-                          placeholder="Enter max cut off"
-                          onChange={(e) => {
-                            setCutOffFilter((prev) => ({
-                              ...prev,
-                              to: e.target.value,
-                            }));
-                          }}
-                          className="border border-gray-400 rounded px-2 py-1 text-sm bg-gray-50 text-gray-900"
-                        />
-                        <button
-                          className="mt-2 bg-[#0b56a4] text-white px-2 py-1 rounded text-sm"
-                          onClick={() => {
-                            setFilterOpen(null);
-                            setCurrentPage(1);
-                          }}
-                        >
-                          Apply
-                        </button>
-                      </div>
-                    }
-                    onClose={() => setFilterOpen(null)}
-                  />
-                )}
               </th>
+
               {/* Date Filter */}
+              {/* Replace "Date" header with "Allocated Staff" */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative border-gray-300 cursor-pointer"
                 onClick={() =>
-                  setFilterOpen(filterOpen === "date" ? null : "date")
+                  setFilterOpen(
+                    filterOpen === "allocatedStaff" ? null : "allocatedStaff"
+                  )
                 }
               >
                 <div className="flex items-center space-x-1 select-none">
-                  <span>Date</span>
-                  <svg
-                    className={`w-4 h-4  ${
-                      filterOpen === "date" ? "rotate-180" : "rotate-0"
-                    } transition-transform duration-300`}
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 8l4 4 4-4"
-                    />
-                  </svg>
+                  <span>Allocated Staff</span>
                 </div>
-                {filterOpen === "date" && (
-                  <FilterMenu
-                    customContent={
-                      <div
-                        className="flex flex-col space-y-2 bg-white rounded-md p-3"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <label className="text-sm text-gray-800 font-medium">
-                          From
-                        </label>
-                        <input
-                          type="date"
-                          value={dateFilter.from}
-                          onChange={(e) => {
-                            setDateFilter((prev) => {
-                              const newFrom = e.target.value;
-                              if (newFrom && prev.to) {
-                                setFilterOpen(null);
-                                setCurrentPage(1);
-                              }
-                              return { ...prev, from: newFrom };
-                            });
-                          }}
-                          className=" rounded px-2 py-1 border border-gray-400 text-sm bg-gray-50 text-gray-900"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <label className="text-sm text-gray-800 font-medium">
-                          To
-                        </label>
-                        <input
-                          type="date"
-                          value={dateFilter.to}
-                          onChange={(e) => {
-                            setDateFilter((prev) => {
-                              const newTo = e.target.value;
-                              if (prev.from && newTo) {
-                                setFilterOpen(null);
-                                setCurrentPage(1);
-                              }
-                              return { ...prev, to: newTo };
-                            });
-                          }}
-                          className="border border-gray-400 rounded px-2 py-1 text-sm bg-gray-50 text-gray-900"
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </div>
-                    }
-                    onClose={() => setFilterOpen(null)}
-                  />
-                )}
               </th>
+
               {/* Status Filter */}
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
@@ -751,25 +510,30 @@ export default function FinalizedListTable() {
                 <td className="px-5 py-3  border-gray-200">
                   {row.studentName}
                 </td>
-                <td className="px-5 py-3  border-gray-200">
-                  {row.community}
+                <td className="px-5 py-3  border-gray-200">{row.community}</td>
+
+                {/* <td className="px-5 py-3 border-gray-200">
+                  {row.hasScholarship ? "Yes" : "No"}
                 </td>
+                <td className="px-5 py-3 border-gray-200 truncate">
+                  {row.amount || "-"}
+                </td> */}
+
                 <td className="px-5 py-3 border-gray-200">
-                  {row.isFirstGraduate ? "Yes" : "No"}
+                  {row.feesPaid ? "Yes" : "No"}
                 </td>
 
-                <td className="px-5 py-3  border-gray-200">
-                  {row.twelfthMarks?.cutOff}
-                </td>
                 <td className="px-5 py-3 border-gray-200">
-                  {new Date(row.dateOfVisit).toISOString().split("T")[0]}
+                  {row.allocatedStaff || "-"}
                 </td>
 
                 <td className="px-5 py-3  border-gray-200">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium
-      ${row.status === "UserCreated" ? "bg-green-100 text-green-700" : ""}
-      ${row.status === "Selected" ? "bg-yellow-100 text-yellow-700" : ""}
+      ${row.status === "Selected" ? "bg-green-100 text-green-700" : ""}
+      ${row.status === "Pending" ? "bg-yellow-100 text-yellow-700" : ""}
+      ${row.status === "UserCreated" ? "bg-blue-100 text-blue-700" : ""}
+
       ${row.status === "Rejected" ? "bg-red-100 text-red-700" : ""}`}
                   >
                     {row.status}
@@ -778,7 +542,7 @@ export default function FinalizedListTable() {
 
                 <td className="px-5 py-3 flex items-center space-x-2 justify-center">
                   <button
-                    onClick={() => navigate(`/admin/enquiry_list/${row._id}`)}
+                    onClick={() => navigate(`/admin/scholarship_list/${row._id}`)}
                     className="p-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
                   >
                     <Eye size={14} />
@@ -790,7 +554,7 @@ export default function FinalizedListTable() {
               <tr>
                 <td
                   colSpan="8"
-                  className="text-center py-14 text-gray-500 text-lg "
+                  className="text-center py-10 text-gray-500 text-lg "
                 >
                   <img src={nodata} alt="" c className="w-[25%] m-auto" />
                   <p className="mt-4">No Data Found</p>
@@ -809,4 +573,6 @@ export default function FinalizedListTable() {
       />
     </div>
   );
-}
+};
+
+export default NonScholarshipListTable;

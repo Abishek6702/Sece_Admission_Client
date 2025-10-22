@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import SchoolSelect from "./SchoolSelect";
 
 const schools = [
   "Kendriya Vidyalaya",
@@ -11,13 +12,50 @@ const schools = [
   "Other School",
 ];
 const schoolAddresses = [
-  "Address 1",
-  "Address 2",
-  "Address 3",
-  "Address 4",
-  "Address 5",
-  "Address 6",
-  "Address 7",
+  "Coimbatore",
+  "Tirupur",
+  "Dharmapuri",
+  "Erode",
+  "Karur",
+  "Namakkal",
+  "Tirupattur",
+  "Thoothukudi",
+  "Ariyalur",
+  "Salem",
+  "Dindigul",
+  "Vellore",
+  "Madurai",
+  "Cuddalore",
+  "Theni",
+  "Thirunelveli",
+  "Tenkasi",
+  "Nagapattinam",
+  "Nilgiris",
+  "Trichirappalli",
+  "Virudhunagar",
+  "Perambalur",
+  "Villupuram",
+  "Krishnagiri",
+  "Kanniyakumari",
+  "Mayiladuthurai",
+  "Sivagangai",
+  "Chennai",
+  "Kallakurichi",
+  "Kerala",
+  "Pudukkottai",
+  "Thrissur",
+  "Ranipet",
+  "Ramanathapuram",
+  "Pudhucherry",
+  "NAGPUR",
+  "Thiruvarur",
+  "Nepal",
+  "Tiruvarur",
+  "Thiruvallur",
+  "Thiruvannamalai",
+  "NAGPUR",
+  "THIRUVARUR",
+  "Bangalore",
 ];
 export default function EducationDetailStep({ data, errors, onChange }) {
   const [open, setOpen] = useState(false);
@@ -49,22 +87,26 @@ export default function EducationDetailStep({ data, errors, onChange }) {
     a.toLowerCase().includes(searchAddress.toLowerCase())
   );
 
-    useEffect(() => {
+  useEffect(() => {
     const maths = parseFloat(data.twelfthMarks.maths) || 0;
     const physics = parseFloat(data.twelfthMarks.physics) || 0;
     const chemistry = parseFloat(data.twelfthMarks.chemistry) || 0;
 
-    const cutoff = (maths ) + (physics / 2) + (chemistry / 2);
+    const cutoff = maths + physics / 2 + chemistry / 2;
 
     if (cutoff !== data.twelfthMarks.cutOff) {
       onChange("twelfthMarks.cutOff", cutoff.toFixed(2));
     }
-  }, [data.twelfthMarks.maths, data.twelfthMarks.physics, data.twelfthMarks.chemistry]);
+  }, [
+    data.twelfthMarks.maths,
+    data.twelfthMarks.physics,
+    data.twelfthMarks.chemistry,
+  ]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-6 h-[64vh] pr-6 overflow-auto custom-scroll">
       <div className="grid md:grid-cols-3 gap-6 ">
-        <div className="relative w-full" ref={selectRef}>
+        {/* <div className="relative w-full" ref={selectRef}>
           <label className="font-semibold mb-1 block text-[#282526]">
             12th School Name <span className="text-red-600">*</span>
           </label>
@@ -122,10 +164,12 @@ export default function EducationDetailStep({ data, errors, onChange }) {
               {errors.twelfthSchoolName}
             </span>
           )}
-        </div>
+        </div> */}
+        <SchoolSelect data={data} onChange={onChange} errors={errors} />
+
         <div className="relative w-full" ref={addressRef}>
           <label className="font-semibold mb-1 block text-[#282526]">
-            12th School Address <span className="text-red-600">*</span>
+            12th School City <span className="text-red-600">*</span>
           </label>
           <div
             className={`flex items-center px-2 py-2 rounded-lg border ${
@@ -206,7 +250,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
 
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            12th Register No <span className="text-red-600">*</span>
+            12th Register No 
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -221,7 +265,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
         </div>
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            Maths (out of 100) <span className="text-red-600">*</span>
+            Maths (out of 100) 
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -235,7 +279,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
         </div>
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            Physics (out of 100) <span className="text-red-600">*</span>
+            Physics (out of 100) 
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -251,7 +295,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
         </div>
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            Chemistry (out of 100) <span className="text-red-600">*</span>
+            Chemistry (out of 100) 
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -282,7 +326,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
         </div>
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            Total (out of 600) <span className="text-red-600">*</span>
+            Total (out of 600)
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
@@ -296,7 +340,7 @@ export default function EducationDetailStep({ data, errors, onChange }) {
         </div>
         <div>
           <label className="font-semibold mb-1 block text-[#282526]">
-            Cut Off (out of 200) <span className="text-red-600">*</span>
+            Cut Off (out of 200)  
           </label>
           <input
             className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"

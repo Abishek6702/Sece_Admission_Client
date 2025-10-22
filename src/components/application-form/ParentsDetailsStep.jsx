@@ -11,8 +11,9 @@ const qualificationOptions = [
 const workTypeOptions = [
   "Private",
   "Government",
-  "Self-employed",
+  "Farmer",
   "Business",
+  "HouseWife",
   "Other",
 ];
 const incomeOptions = [
@@ -40,7 +41,7 @@ const ParentsDetailsStep = ({
       {/* FATHER DETAILS */}
       <div className="md:col-span-3 ">
         <h3 className="text-xl playfair font-semibold text-gray-700 mb-4">
-          Father Details
+          Father's Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -140,35 +141,23 @@ const ParentsDetailsStep = ({
           </div>
 
           <div>
-            <label className="font-semibold mb-1 block text-[#282526]">
-              Annual Income <span className="text-red-600">*</span>
-            </label>
-            <select
-              value={
-                Object.keys(incomeMapping).find(
-                  (key) => incomeMapping[key] === data.father?.annualIncome
-                ) || ""
-              }
-              onChange={(e) =>
-                onChange(
-                  "father.annualIncome",
-                  incomeMapping[e.target.value] || 0
-                )
-              }
-              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
-            >
-              <option value="">Select Income</option>
-              {incomeOptions.map((i) => (
-                <option key={i} value={i}>
-                  {i}
-                </option>
-              ))}
-            </select>
+  <label className="font-semibold mb-1 block text-[#282526]">
+    Annual Income <span className="text-red-600">*</span>
+  </label>
 
-            {errors.fatherIncome && (
-              <p className="text-red-500 text-sm">{errors.fatherIncome}</p>
-            )}
-          </div>
+  <input
+    type="text"
+    value={data.father?.annualIncome || ""}
+    onChange={(e) => onChange("father.annualIncome", e.target.value)}
+    placeholder="Enter annual income"
+    className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+  />
+
+  {errors.fatherIncome && (
+    <p className="text-red-500 text-sm">{errors.fatherIncome}</p>
+  )}
+</div>
+
 
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
@@ -217,7 +206,7 @@ const ParentsDetailsStep = ({
       {/* MOTHER DETAILS */}
       <div className="md:col-span-3 ">
         <h3 className="text-xl playfair font-semibold text-gray-700 mb-4">
-          Mother Details
+          Mother's Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Repeat same fields for Mother, changing father.* → mother.* and error keys */}
@@ -321,35 +310,23 @@ const ParentsDetailsStep = ({
 
           {/* Annual Income */}
           <div>
-            <label className="font-semibold mb-1 block text-[#282526]">
-              Annual Income <span className="text-red-600">*</span>
-            </label>
-            <select
-              value={
-                Object.keys(incomeMapping).find(
-                  (key) => incomeMapping[key] === data.mother?.annualIncome
-                ) || ""
-              }
-              onChange={(e) =>
-                onChange(
-                  "mother.annualIncome",
-                  incomeMapping[e.target.value] || 0
-                )
-              }
-              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
-            >
-              <option value="">Select Income</option>
-              {incomeOptions.map((i) => (
-                <option key={i} value={i}>
-                  {i}
-                </option>
-              ))}
-            </select>
+  <label className="font-semibold mb-1 block text-[#282526]">
+    Annual Income <span className="text-red-600">*</span>
+  </label>
 
-            {errors.motherIncome && (
-              <p className="text-red-500 text-sm">{errors.motherIncome}</p>
-            )}
-          </div>
+  <input
+    type="text"
+    value={data.mother?.annualIncome || ""}
+    onChange={(e) => onChange("mother.annualIncome", e.target.value)}
+    placeholder="Enter annual income"
+    className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+  />
+
+  {errors.motherIncome && (
+    <p className="text-red-500 text-sm">{errors.motherIncome}</p>
+  )}
+</div>
+
 
           {/* Mobile */}
           <div>
@@ -382,7 +359,7 @@ const ParentsDetailsStep = ({
           {/* Email */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Email <span className="text-red-600">*</span>
+              Email 
             </label>
             <input
               type="email"

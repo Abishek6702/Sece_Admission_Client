@@ -9,15 +9,11 @@ import {
   LayoutDashboard,
   X,
 } from "lucide-react";
-import ScholorshipModal from "./ScholorshipModal";
-
 import { toast } from "react-toastify";
 
-export default function EnquiryDetail() {
+export default function ReVisitedDetail() {
   const { id } = useParams();
   const [enquiry, setEnquiry] = useState(null);
-  const [scholarModalOpen, setScholarModalOpen] = useState(false);
-  const [modalActionStatus, setModalActionStatus] = useState(""); // "Selected" or "Rejected"
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${id}`)
@@ -57,30 +53,6 @@ export default function EnquiryDetail() {
       alert("Error updating status");
     }
   };
-  const handleScholarshipSave = (fields) => {
-  // PATCH request
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${enquiry._id}/status`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status: modalActionStatus, ...fields }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to update status");
-      return res.json();
-    })
-    .then((data) => {
-      toast.success("Status Updated Successfully");
-      setEnquiry((prev) => ({ ...prev, ...data }));
-      setScholarModalOpen(false);
-      setModalActionStatus("");
-    })
-    .catch((err) => {
-      toast.error("Error updating status");
-      setScholarModalOpen(false);
-      setModalActionStatus("");
-    });
-};
-
 
   return (
     <div className=" max-w-6xl ">
@@ -92,49 +64,57 @@ export default function EnquiryDetail() {
             Dashboard
           </Link>
           <ChevronRight />
-          <Link to="/admin/enquiry_list" className="flex items-center gap-1">
+          <Link to="/admin/visitors_list" className="flex items-center gap-1">
             <ClipboardList className="w-5" />
-            Enquiry List
+            Visitors List
           </Link>
           <ChevronRight />
           <span className="font-semibold text-[#0B56A4] ">
             {enquiry.studentName}
           </span>
         </nav>
-        <div className="flex items-center gap-4">
-          {enquiry.status === "Pending" && (
-            <>
-              <button
-                onClick={() => {
-                  setModalActionStatus("Selected");
-                  setScholarModalOpen(true);
-                }}
-                className="p-1 rounded-lg px-2 gap-1 flex items-center bg-green-100 text-green-600 hover:bg-green-200 cursor-pointer"
-                title="Approve"
-              >
-                <Check size={20} />
-                Approve
-              </button>
-              <button
-                onClick={() => {
-                  setModalActionStatus("Rejected");
-                  setScholarModalOpen(true);
-                }}
-                className="p-1 flex items-center gap-1 px-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
-                title="Reject"
-              >
-                <X size={20} />
-                Reject
-              </button>
-            </>
-          )}
-        </div>
       </div>
 
       {/* <h1 className="text-3xl font-bold mb-8">{enquiry.studentName}</h1> */}
 
       {/* Main content grid */}
       <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <section className="bg-white px-5 py-3 shadow rounded-lg">
+          <h2 className="text-xl font-semibold text-[#0B56A4] mb-4 playfair">
+            ReVisit Details
+          </h2>
+
+          {enquiry.revisits && enquiry.revisits.length > 0 ? (
+            <table className="min-w-full text-sm text-left text-gray-700">
+              <thead>
+                <tr>
+                  <th className="border-b border-gray-300 px-4 py-2">Date</th>
+                  <th className="border-b border-gray-300 px-4 py-2">
+                    Visited By
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {enquiry.revisits.map((revisit, index) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td className=" px-4 py-2">
+                      {new Date(revisit.date).toLocaleDateString()}
+                    </td>
+                    <td className=" px-4 py-2">
+                      {revisit.visitedBy}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500 text-sm">No revisit records found.</p>
+          )}
+        </section>
+
         {/* Personal Details */}
         <section className="bg-white px-5 py-3 shadow rounded-lg">
           <h2 className="text-xl font-semibold  text-[#0B56A4] mb-1 playfair">
@@ -249,15 +229,6 @@ export default function EnquiryDetail() {
           </dl>
         </section>
       </div>
-      {scholarModalOpen && (
-  <ScholorshipModal
-    setScholorModalOpen={setScholarModalOpen}
-    onSave={handleScholarshipSave}
-    status={modalActionStatus} // Pass info for approve/reject
-    existingData={enquiry}
-  />
-)}
-
     </div>
   );
 }
