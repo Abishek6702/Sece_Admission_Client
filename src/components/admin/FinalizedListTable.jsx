@@ -778,7 +778,7 @@ export default function FinalizedListTable() {
 
                 <td className="px-5 py-3 flex items-center space-x-2 justify-center">
                   <button
-                    onClick={() => navigate(`/admin/enquiry_list/${row._id}`)}
+                    onClick={() => navigate(`/admin/finalized_enquiries/${row._id}`)}
                     className="p-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
                   >
                     <Eye size={14} />

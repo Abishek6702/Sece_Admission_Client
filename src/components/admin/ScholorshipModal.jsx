@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import CustomStaffDropdown from "./CustomStaffDropdown";
 
 const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
   const [hasScholarship, setHasScholarship] = useState(false);
@@ -9,11 +10,15 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
   const [feesPaid, setFeesPaid] = useState(false);
   const [transactionNo, setTransactionNo] = useState("");
   const [finalizedCourse, setFinalizedCourse] = useState("");
+  const [allocatedQuota, setAllocatedQuota] = useState("");
+  // const [staffMembers, setStaffMembers] = useState([]);
+  // const [addStaffMode, setAddStaffMode] = useState(false);
+  // const [newStaffName, setNewStaffName] = useState("");
   // Example dropdown options
   const scholarshipTypes = ["Merit-based", "Sports", "Need-based", "Community"];
-  const staffMembers = ["John Doe", "Priya Sharma", "Ravi Kumar", "Anita Das"];
+  // const staffMembers = ["John Doe", "Priya Sharma", "Ravi Kumar", "Anita Das"];
   const courseOptions = [
-   "B.E CSE",
+    "B.E CSE",
     "B.E ECE",
     "B.E AI-ML",
     "B.E Cyber Security",
@@ -22,7 +27,7 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
     "B.E Mech",
     "B.Tech IT",
     "B.Tech CSBS",
-    "B.Tech AI & DS"
+    "B.Tech AI & DS",
   ];
 
   const handleSave = () => {
@@ -34,6 +39,7 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
       feesPaid,
       transactionNo,
       finalizedCourse,
+      allocatedQuota
     };
     onSave(data);
     console.log("Form Data:", data);
@@ -89,23 +95,11 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
             </div>
           </div>
 
-          {/* Staff Allocation — always visible */}
           <div className="col-span-1">
-            <label className="font-semibold mb-1 block text-[#282526]">
-              Allocated Staff Member:
-            </label>
-            <select
-              value={allocatedStaff}
-              onChange={(e) => setAllocatedStaff(e.target.value)}
-              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
-            >
-              <option value="">Select Staff Member</option>
-              {staffMembers.map((staff) => (
-                <option key={staff} value={staff}>
-                  {staff}
-                </option>
-              ))}
-            </select>
+            <CustomStaffDropdown
+              allocatedStaff={allocatedStaff}
+              setAllocatedStaff={setAllocatedStaff}
+            />
           </div>
 
           {/* Scholarship Type & Amount (if Yes) */}
@@ -194,7 +188,19 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
               ))}
             </select>
           </div>
-
+          <div className="col-span-2">
+            <label className="font-semibold mb-1 block text-[#282526]">
+              Quota{" "}
+            </label>
+            <select
+              onChange={(e) => setAllocatedQuota(e.target.value)}
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+            >
+              <option value="">Select Quota</option>
+              <option value="Government Quota">Government Quota</option>
+              <option value="Management Quota">Management Quota</option>
+            </select>
+          </div>
           {/* Transaction No (if Fees Paid) */}
           {feesPaid && (
             <div className="col-span-1 md:col-span-2">

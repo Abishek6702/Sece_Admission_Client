@@ -29,7 +29,7 @@ const AdminPieChart = () => {
       {
         label: `Quota Distribution - ${selectedYear}`,
         data: yearlyData[selectedYear].data,
-        backgroundColor: ["#4bc0c0", "#ff6384"],
+        backgroundColor: ["#2e9797", "#ff6384"],
         hoverBackgroundColor: ["#4bc0c0", "#ff6384"],
         borderWidth: ``,
       },

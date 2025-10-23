@@ -138,7 +138,7 @@ export default function ApplicationListTable() {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:5000/api/application/")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/application/`)
       .then((res) => res.json())
       .then((json) => {
         setData(json.data || []);

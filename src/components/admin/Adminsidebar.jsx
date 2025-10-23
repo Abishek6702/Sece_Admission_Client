@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { layouts } from "chart.js";
 
 const AdminSidebar = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       Icon: FileCheck,
     },
     { id: "application_list", label: "Application List", Icon: FileText },
+    
 
     // {
     //   id: "finalized_applications",

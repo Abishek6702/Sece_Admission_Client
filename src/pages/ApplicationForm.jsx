@@ -10,14 +10,14 @@ const ApplicationForm = () => {
   const [enquiryData, setEnquiryData] = useState(null);
   const token = localStorage.getItem("token");
   let userId = null;
-  let enquiryId=null;
+  let enquiryId = null;
 
   if (token) {
     const decoded = jwtDecode(token);
     userId = decoded.id;
-    enquiryId=decoded.enquiry
+    enquiryId = decoded.enquiry;
   }
-  console.log("EnquiryID:",enquiryId)
+  console.log("EnquiryID:", enquiryId);
 
   useEffect(() => {
     async function fetchInitialData() {
@@ -67,6 +67,7 @@ const ApplicationForm = () => {
             courseEntryType: result.courseEntryType || "",
             preferredCourse: result.finalizedCourse || "",
             finalizedCourse: result.finalizedCourse || "",
+            quota: result.allocatedQuota || "",
           };
           setEnquiryData(filteredInitial);
         }
@@ -78,7 +79,7 @@ const ApplicationForm = () => {
     }
     fetchInitialData();
   }, [enquiryId, token]);
-  console.log("EnquiryData:",fetchingInitial)
+  console.log("EnquiryData:", fetchingInitial);
 
   return (
     <div className="main_conatiner w-full h-[100vh] flex items-center bg-white ">
@@ -86,7 +87,7 @@ const ApplicationForm = () => {
         <ApplicationSidebar />
       </div>
       <div className="dynamic-section  h-full lg:w-[75%]  w-full p-6 ">
-      <ApplicationFormData initialData={enquiryData} />
+        <ApplicationFormData initialData={enquiryData} />
       </div>
     </div>
   );

@@ -226,7 +226,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
             error={errors.allotmentOrder}
             onChange={handleSingleFileChange("allotmentOrder")}
           />
-          <FileUpload
+          {/* <FileUpload
             label="Declaration Form"
             name="declarationForm"
             file={getFileObject("declarationForm")}
@@ -241,7 +241,7 @@ const DocumentsStep = ({ data = {}, errors = {}, onChange = () => {} }) => {
             fileUrl={getFileUrl("physicalFitnessForm")}
             error={errors.physicalFitnessForm}
             onChange={handleSingleFileChange("physicalFitnessForm")}
-          />
+          /> */}
         </>
       )}
 

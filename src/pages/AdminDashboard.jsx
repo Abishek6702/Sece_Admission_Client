@@ -19,6 +19,7 @@ import ReVisitedDeatil from "../components/admin/ReVisitedDetail";
 // import FinalizedApplications from "../components/admin/FinalizedApplications";
 import ScholarshipList from "../components/admin/ScholarshipList";
 import ScholarshipDetail from "../components/admin/ScholarshipDetail.jsx";
+import FinalizedDetail from "../components/admin/FinalizedDetail.jsx";
 
 const TABS = {
   DASHBOARD: "dashboard",
@@ -74,6 +75,10 @@ const AdminDashboard = () => {
             <Route
               path="finalized_enquiries"
               element={<FinalizedEnquiries />}
+            />
+            <Route
+              path="finalized_enquiries/:id"
+              element={<FinalizedDetail />}
             />
             <Route
               path="application_list/:id"

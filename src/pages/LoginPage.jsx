@@ -39,11 +39,14 @@ export default function Login() {
       localStorage.setItem("token", token);
       toast.success("Login successful!");
 
-      if (role.toLowerCase() === "admin" || "staff") navigate("/admin");
-      else if (role.toLowerCase() === "student") {
+      if (role.toLowerCase() === "admin" || role.toLowerCase() === "staff") {
+        navigate("/admin");
+      } else if (role.toLowerCase() === "student") {
         if (firstTimeLogin) navigate("/application");
         else navigate("/dashboard");
-      } else navigate("/");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     } finally {
