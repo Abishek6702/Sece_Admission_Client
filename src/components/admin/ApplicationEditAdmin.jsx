@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Stepper from "../application-form/Stepper";
 import PersonalDetailStep from "../application-form/PersonalDetailStep";
 import PersonalContactStep from "../application-form/PersonalContactStep";
@@ -9,6 +9,7 @@ import AdditionalInformationStep from "../application-form/AdditionalInformation
 import DocumentsStep from "../application-form/DocumentsStep";
 import { ArrowLeft, X } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 const titles = [
   {
@@ -36,7 +37,7 @@ const titles = [
     description: "Furnish all the required documents with proper formatting",
   },
 ];
-const defaultData = {
+const initialData = {
   courseEntryType: "",
   studentName: "",
   gender: "",
@@ -134,225 +135,16 @@ function validate(data, step) {
   return {}; // skip all validation for now
 }
 
-// function validate(data, step) {
-//   const errors = {};
-//   const mobileRegex = /^[1-9][0-9]{9}$/;
-//   //personal details step
-//   if (step === 0) {
-//     if (!data.studentName) errors.studentName = "Name is required";
-//     if (!data.gender) errors.gender = "Gender is required";
-//     if (!data.dob) errors.dob = "Date of birth is required";
-//     if (!data.community) errors.community = "Community is required";
-//     if (!data.casteName) errors.casteName = "CasteName is required";
-//     if (!data.communityCertificateNo)
-//       errors.communityCertificateNo =
-//         "Community certificate number is required";
-//     if (!data.motherTongue) errors.motherTongue = "Mother tounge is important";
-//     if (!data.religion) errors.religion = "Religion is required";
-//     if (!data.nationality) errors.nationality = "Nationality is required";
-//     if (!data.bloodGroup) errors.bloodGroup = "Blood Group is required";
-//     if (!data.aadharNo) errors.aadharNo = "Aadhaar number is important";
-//   }
-//   // personal contact details
-//   if (step === 1) {
-//     if (!data.permanentAddress.doorNo)
-//       errors.permanentdoorNo = "Door No required";
-//     if (!data.permanentAddress.street)
-//       errors.permanentstreet = "Street required";
-//     if (!data.permanentAddress.taluk) errors.permanenttaluk = "Taluk required";
-//     if (!data.permanentAddress.district)
-//       errors.permanentdistrict = "District required";
-//     if (!data.permanentAddress.state) errors.permanentstate = "State required";
-//     if (!data.permanentAddress.pincode)
-//       errors.permanentpincode = "Pincode required";
-
-//     if (!data.temporaryAddress.doorNo) errors.doorNo = "Door No required";
-//     if (!data.temporaryAddress.street) errors.street = "Street required";
-//     if (!data.temporaryAddress.taluk) errors.taluk = "Taluk required";
-//     if (!data.temporaryAddress.district) errors.district = "District required";
-//     if (!data.temporaryAddress.state) errors.state = "State required";
-//     if (!data.temporaryAddress.pincode) errors.pincode = "Pincode required";
-
-//     if (!data.selfEmail) errors.selfEmail = "Email is required";
-//     if (!data.selfMobileNo) {
-//       errors.selfMobileNo = "Mobile number is required";
-//     } else if (!mobileRegex.test(data.selfMobileNo)) {
-//       errors.selfMobileNo =
-//         "Enter a valid 10-digit mobile number (not starting with 0)";
-//     }
-//     if (!data.selfWhatsapp) {
-//       errors.selfWhatsapp = "Whatsapp number is required";
-//     } else if (!mobileRegex.test(data.selfWhatsapp)) {
-//       errors.selfWhatsapp =
-//         "Enter a valid 10-digit Whatsapp number (not starting with 0)";
-//     }
-//   }
-//   // educational details
-//   if (step === 2) {
-//     if (!data.courseEntryType)
-//       errors.courseEntryType = "Course Entry Type is required";
-//     if (!data.preferredCourse)
-//       errors.preferredCourse = "Course Prefered is required";
-//     // if (!data.insuranceNominee)
-//     //   errors.insuranceNominee = "Insurance Nominee is required";
-//     if (!data.hostelDayScholar)
-//       errors.hostelDayScholar = " Mode of Stay is required";
-//     if (!data.emisNo) errors.emisNo = "Emis No is required";
-//     // if (!data.siblingsStudyingHere) {
-//     //   errors.siblingsStudyingHere = "Sibling details is required";
-//     // }
-
-//     // if (data.siblingsStudyingHere === true) {
-//     //   // errors.siblingDetails = {};
-//     //   if (!data.siblingDetails.name) {
-//     //     errors.siblingDetails.name = "Sibling name is required";
-//     //   }
-//     // if (!data.siblingDetails.rollNo) {
-//     //   errors.siblingDetails.rollNo = "Sibling roll no is required";
-//     // }
-//     // if (!data.siblingDetails.department) {
-//     //   errors.siblingDetails.department = "Sibling department is required";
-//     // }
-//     // if (!data.siblingDetails.yearOfAdmission) {
-//     //   errors.siblingDetails.yearOfAdmission =
-//     //     "Sibling year of admission is required";
-//     // }
-//     // }
-
-//     if (!data.careerOption) errors.careerOption = "Carrer option is required";
-//   }
-//   // parents details
-//   if (step === 3) {
-//     // Father validation
-//     if (!data.father.name) errors.fatherName = "Father's name is required";
-//     if (!data.father.qualification)
-//       errors.fatherQualification = "Father's qualification is required";
-//     if (!data.father.workType)
-//       errors.fatherWorkType = "Father's work type is required";
-//     // if (!data.father.organizationName)
-//     //   errors.fatherOrganization = "Father's organization name is required";
-//     // if (!data.father.designation)
-//     //   errors.fatherDesignation = "Father's designation is required";
-//     if (!data.father.annualIncome)
-//       errors.fatherIncome = "Father's annual income is required";
-//     if (!data.father.mobile) {
-//       errors.fatherMobile = "Father's mobile is required";
-//     } else if (!mobileRegex.test(data.father.mobile)) {
-//       errors.fatherMobile =
-//         "Enter a valid 10-digit mobile number for Father (not starting with 0)";
-//     }
-
-//     // Mother validation
-//     if (!data.mother.name) errors.motherName = "Mother's name is required";
-//     if (!data.mother.qualification)
-//       errors.motherQualification = "Mother's qualification is required";
-//     if (!data.mother.workType)
-//       errors.motherWorkType = "Mother's work type is required";
-//     // if (!data.mother.organizationName)
-//     //   errors.motherOrganization = "Mother's organization name is required";
-//     // if (!data.mother.designation)
-//     //   errors.motherDesignation = "Mother's designation is required";
-//     if (!data.mother.annualIncome)
-//       errors.motherIncome = "Mother's annual income is required";
-//     // if (!data.mother.mobile) {
-//     //   errors.motherMobile = "Mother's mobile is required";
-//     // } else if (!mobileRegex.test(data.mother.mobile)) {
-//     //   errors.motherMobile =
-//     //     "Enter a valid 10-digit mobile number for Mother (not starting with 0)";
-//     // }
-//   }
-//   // Additional Infromation
-//   if (step === 4) {
-//     if (!data.quota) {
-//       errors.quota = "Quota selection is required";
-//     }
-
-//     if (!data.familyIncomeAsPerCertificate) {
-//       errors.familyIncomeAsPerCertificate =
-//         "Family income (as per certificate) is required";
-//     }
-
-//     if (!data.incomeCertificateNo) {
-//       errors.incomeCertificateNo = "Income certificate number is required";
-//     }
-
-//     // Conditional for Government Quota
-//     if (data.quota === "Government Quota") {
-//       if (!data.counsellingApplicationNo) {
-//         errors.counsellingApplicationNo =
-//           "Counselling application number is required";
-//       }
-//       if (!data.counsellingOverallRank) {
-//         errors.counsellingOverallRank = "Counselling overall rank is required";
-//       }
-//       if (!data.counsellingCommunityRank) {
-//         errors.counsellingCommunityRank =
-//           "Counselling community rank is required";
-//       }
-
-//       // Conditional for First Graduate
-//       if (data.isFirstGraduate && !data.firstGraduateNumber) {
-//         errors.firstGraduateNumber =
-//           "First Graduate Certificate Number is required";
-//       }
-//     }
-//   }
-//   // Student documents
-//   if (step === 5) {
-//     if (!data.studentPhoto || data.studentPhoto.length === 0)
-//       errors.studentPhoto = "Student photo is required";
-//     // if (!data.fatherPhoto || data.fatherPhoto.length === 0)
-//     //   errors.fatherPhoto = "Father's photo is required";
-//     // if (!data.motherPhoto || data.motherPhoto.length === 0)
-//     //   errors.motherPhoto = "Mother's photo is required";
-
-//     if (!data.tenthMarkSheet)
-//       errors.tenthMarkSheet = "10th Mark Sheet is required";
-//     // if (!data.eleventhMarkSheet)
-//     //   errors.eleventhMarkSheet = "11th Mark Sheet is required";
-//     // if (!data.twelthMarkSheet)
-//     //   errors.twelthMarkSheet = "12th Mark Sheet is required";
-//     if (!data.transferCertificate)
-//       errors.transferCertificate = "Transfer Certificate is required";
-
-//     if (data.quota === "Government Quota") {
-//       if (!data.allotmentOrder)
-//         errors.allotmentOrder = "Allotment Order is required";
-//       // if (!data.declarationForm)
-//       //   errors.declarationForm = "Declaration Form is required";
-//       // if (!data.physicalFitnessForm)
-//       //   errors.physicalFitnessForm = "Physical Fitness Form is required";
-//     }
-//     if (!data.communityCertificate)
-//       errors.communityCertificate = "Community Certificate is required";
-//     if (!data.incomeCertificate)
-//       errors.incomeCertificate = "Income Certificate is required";
-
-//     if (!data.aadharCopy) errors.aadharCopy = "Aadhar copy is required";
-
-//     // if (
-//     //   data.nationality !== "India" ||
-//     //   data.permanentAddress.state !== "Tamil Nadu"
-//     // ) {
-//     //   if (!data.migrationCertificate)
-//     //     errors.migrationCertificate = "Migration Certificate is required";
-//     // }
-
-//     if (data.isFirstGraduate) {
-//       if (!data.firstGraduateCertificate)
-//         errors.firstGraduateCertificate =
-//           "First Graduate Certificate is required";
-//     }
-//   }
-//   return errors;
-// }
-const ApplicationFormData = ({ initialData,open, setOpen, }) => {
+const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
   const [step, setStep] = useState(0);
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState(initialData);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [applicationId, setApplicationId] = useState(null);
+  const { id } = useParams();
+
   const navigate = useNavigate();
-  console.log("alk", initialData);
 
   const token = localStorage.getItem("token");
   let userId = null;
@@ -361,16 +153,40 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
     const decoded = jwtDecode(token);
     userId = decoded.id;
   }
+  useEffect(() => {
+    if (id) {
+      setApplicationId(id); // ✅ Correct usage of setState
+      console.log("params set from id:", id);
+    }
+  }, [id]);
 
   useEffect(() => {
-    if (initialData) {
-      setData((prev) => ({ ...prev, ...initialData }));
-    }
-  }, [initialData]);
+    if (applicationId) {
+      // Fetch application data
+      const fetchApplicationData = async () => {
+        try {
+          const response = await fetch(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/api/application/${applicationId}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch application data");
+          }
+          const applicationData = await response.json();
+          console.log("data from ak",applicationData.data);
+          setData(applicationData.data); // Update form state with fetched data
+        } catch (error) {
+          console.error(error);
+          alert("Error loading application data");
+        }
+      };
 
+      fetchApplicationData();
+    }
+  }, [applicationId]);
   const handleChange = (name, value) => {
     if (name.includes(".")) {
-      // For nested fields (address, twelfthMarks)
       const [parent, child] = name.split(".");
       setData((prev) => ({
         ...prev,
@@ -397,36 +213,36 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
         setLoading(true);
         try {
           const formData = new FormData();
-          formData.append("userId", userId);
+          //   formData.append("userId", userId);
 
           // Append regular fields
           for (const key in data) {
+            // Skip remarks entirely
+            if (key === "remarks") continue;
+
             const value = data[key];
-            if (
-              typeof value === "object" &&
-              !Array.isArray(value) &&
-              value !== null
-            ) {
-              // Nested objects (like father, mother, addresses)
-              for (const subKey in value) {
-                formData.append(`${key}.${subKey}`, value[subKey]);
-              }
-            } else if (Array.isArray(value)) {
-              // For file arrays
-              value.forEach((file) => formData.append(key, file));
+
+            if (Array.isArray(value)) {
+              // For files or arrays of primitives
+              value.forEach((item) => formData.append(key, item));
+            } else if (typeof value === "object" && value !== null) {
+              // Nested object, convert to JSON string
+              formData.append(key, JSON.stringify(value));
             } else {
               formData.append(key, value);
             }
           }
 
           // Send POST request
-          const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/api/application/`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
+          // const response = await fetch(
+          //   `${
+          //     import.meta.env.VITE_API_BASE_URL
+          //   }/api/application/${applicationId}/resubmit`,
+          //   {
+          //     method: "PUT",
+          //     body: formData,
+          //   }
+          // );
 
           const result = await response.json();
 
@@ -434,8 +250,11 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
             console.error("Error:", result.message);
             alert(result.message);
           } else {
-            console.log("Success:", result);
-            navigate("/application-thank-you");
+            toast.success(`Remark Submitted Sucessfully`, {
+              onClose: () => window.location.reload(),
+            });
+            // console.log("Success:", result);
+            // navigate("/dashboard");
           }
         } catch (err) {
           console.error("Submission failed", err);
@@ -449,16 +268,25 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto ">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold playfair">
-            {titles[step].heading}
-          </h2>
-          <div className="bg-gray-300 text-gray-700 cursor-pointer rounded-full p-1"  onClick={() => setOpen(false)}>
-            <X />
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center  w-full">
+            <h2 className="text-2xl font-bold playfair">
+              {titles[step].heading}
+            </h2>
+             
+            <div
+              className="bg-gray-300 text-gray-700 cursor-pointer rounded-full p-1"
+              onClick={() => setOpen(false)}
+            >
+              <X />
+            </div>
           </div>
+         
         </div>
+
         <p className="text-gray-500 mb-4">{titles[step].description}</p>
+
         <Stepper currentStep={step} />
         <form onSubmit={handleStepSubmit}>
           {step === 0 && (
@@ -503,6 +331,7 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
               onChange={handleChange}
             />
           )}
+
           <div className="flex justify-end gap-4 mt-8">
             {step > 0 && (
               <button
@@ -515,21 +344,35 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
                 Back
               </button>
             )}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#0B56A4] text-white"
-              }`}
-            >
-              {loading
-                ? "Submitting..."
-                : step < 5
-                ? "Next Step"
-                : "Complete Submission"}
-            </button>
+
+            {step < 5 && (
+              <button
+                type="submit"
+                disabled={loading}
+                className={`px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#0B56A4] text-white"
+                }`}
+              >
+                {loading ? "Submitting..." : "Next Step"}
+              </button>
+            )}
+
+            {/* Only show Complete Submission button if NOT disabled */}
+            {step === 5  && (
+              <button
+                type="submit"
+                disabled={loading}
+                className={`px-6 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${
+                  loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#0B56A4] text-white"
+                }`}
+              >
+                {loading ? "Submitting..." : "Complete Submission"}
+              </button>
+            )}
           </div>
         </form>
       </div>
@@ -537,4 +380,4 @@ const ApplicationFormData = ({ initialData,open, setOpen, }) => {
   );
 };
 
-export default ApplicationFormData;
+export default ApplicationEditAdmin;

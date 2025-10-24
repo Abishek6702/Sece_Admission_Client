@@ -380,9 +380,9 @@ export default function ApplicationListTable() {
   if (error) return <div>Error loading data: {error}</div>;
 
   return (
-    <div>
+    <div className=" w-[96%]">
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 ">
         <div className="flex items-center space-x-3  justify-between w-full">
           <div className="relative">
             <input
@@ -428,8 +428,8 @@ export default function ApplicationListTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg shadow-sm  ">
-        <table className="min-w-full border-collapse bg-white">
+      <div className="overflow-x-auto rounded-lg shadow-sm w-[100%]  ">
+        <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium">
             <tr>
               <th className="px-5 py-3">

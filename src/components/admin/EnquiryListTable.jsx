@@ -585,7 +585,7 @@ export default function CourseTable() {
               </th>
               {/* Graduate Filter */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative  border-gray-300 cursor-pointer whitespace-nowrap"
                 onClick={() =>
                   setFilterOpen(filterOpen === "graduate" ? null : "graduate")
                 }
@@ -623,7 +623,7 @@ export default function CourseTable() {
               </th>
               {/* Cutoff Filter */}
               <th
-                className="px-5 py-3 relative  border-gray-300 cursor-pointer"
+                className="px-5 py-3 relative  border-gray-300 cursor-pointer whitespace-nowrap"
                 onClick={() =>
                   setFilterOpen(filterOpen === "cutoff" ? null : "cutoff")
                 }
@@ -834,7 +834,7 @@ export default function CourseTable() {
                 <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
                   {row.enquiryId}
                 </td>
-                <td className="px-5 py-3  border-gray-200">
+                <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
                   {row.studentName}
                 </td>
                 <td className="px-5 py-3  border-gray-200">{row.community}</td>
@@ -845,7 +845,7 @@ export default function CourseTable() {
                 <td className="px-5 py-3  border-gray-200">
                   {row.twelfthMarks?.cutOff}
                 </td>
-                <td className="px-5 py-3 border-gray-200">
+                <td className="px-5 py-3 border-gray-200 whitespace-nowrap">
                   {new Date(row.dateOfVisit).toISOString().split("T")[0]}
                 </td>
 
