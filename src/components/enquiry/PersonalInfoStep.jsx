@@ -373,7 +373,7 @@ export default function PersonalInfoStep({ data, errors, onChange }) {
       </div>
       <div>
         <label className="font-semibold mb-1 block text-[#282526]">
-          Student Email <span className="text-red-600">*</span>
+          Student Email 
         </label>
         <input
           className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"

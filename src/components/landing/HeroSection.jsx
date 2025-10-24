@@ -34,9 +34,9 @@ const HeroSection = () => {
   const [selectedOption, setSelectedOption] = useState("");
 
   const options = [
-    { label: "I Year B.E / B.Tech", value: "I Year B.E / B.Tech" },
-    { label: "Lateral Entry", value: "Lateral Entry" },
-    { label: "I Year M.E", value: "I Year M.E" },
+    { label: "I Year B.E / B.Tech Programme", value: "I Year B.E / B.Tech" },
+    { label: "B.E / B.Tech Lateral Entry", value: "Lateral Entry" },
+    { label: "P.G Programme", value: "I Year M.E" },
   ];
 
   const handleContinue = () => {

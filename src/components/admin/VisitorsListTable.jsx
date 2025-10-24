@@ -350,6 +350,7 @@ const VisitorsListTable = () => {
         <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>
+              
               <th className="px-5 py-3">
                 <input
                   type="checkbox"
@@ -360,6 +361,9 @@ const VisitorsListTable = () => {
                   onChange={toggleSelectAll}
                   className="rounded border-gray-300 accent-white"
                 />
+              </th>
+              <th className="px-5 py-3">
+                ID
               </th>
               <th className="px-5 py-3  border-gray-300">Name</th>
               <th
@@ -684,6 +688,9 @@ const VisitorsListTable = () => {
                     onChange={() => toggleRowSelection(row._id)}
                     className="rounded border-gray-300"
                   />
+                </td>
+                <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
+                  {row.enquiryId}
                 </td>
                 <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
                   {row.studentName}

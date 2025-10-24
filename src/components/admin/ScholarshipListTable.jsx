@@ -331,6 +331,9 @@ const ScholarshipListTable = () => {
                   className="rounded border-gray-300 accent-white"
                 />
               </th>
+              <th className="px-5 py-3">
+                ID
+              </th>
               <th className="px-5 py-3  border-gray-300">Name</th>
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
@@ -502,6 +505,9 @@ const ScholarshipListTable = () => {
                     onChange={() => toggleRowSelection(row._id)}
                     className="rounded border-gray-300"
                   />
+                </td>
+                <td className="px-5 py-3  border-gray-200 whitespace-nowrap">
+                  {row.enquiryId}
                 </td>
                 <td className="px-5 py-3  border-gray-200">
                   {row.studentName}

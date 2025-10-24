@@ -102,6 +102,7 @@ export default function EnquiryDetail() {
           </span>
         </nav>
         <div className="flex items-center gap-4">
+          <button className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white">Edit</button>
           {enquiry.status === "Pending" && (
             <>
               <button

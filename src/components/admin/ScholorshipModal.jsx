@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import CustomStaffDropdown from "./CustomStaffDropdown";
 
-const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
+const ScholorshipModal = ({ setScholorModalOpen, onSave, status }) => {
   const [hasScholarship, setHasScholarship] = useState(false);
   const [scholarshipType, setScholarshipType] = useState("");
   const [amount, setAmount] = useState("");
@@ -11,6 +11,7 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
   const [transactionNo, setTransactionNo] = useState("");
   const [finalizedCourse, setFinalizedCourse] = useState("");
   const [allocatedQuota, setAllocatedQuota] = useState("");
+  const [rejectRemark, setRejectRemark] = useState("");
   // const [staffMembers, setStaffMembers] = useState([]);
   // const [addStaffMode, setAddStaffMode] = useState(false);
   // const [newStaffName, setNewStaffName] = useState("");
@@ -39,7 +40,8 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
       feesPaid,
       transactionNo,
       finalizedCourse,
-      allocatedQuota
+      allocatedQuota,
+      rejectRemark,
     };
     onSave(data);
     console.log("Form Data:", data);
@@ -213,6 +215,22 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
                 value={transactionNo}
                 onChange={(e) => setTransactionNo(e.target.value)}
                 className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+              />
+            </div>
+          )}
+          {status === "Rejected" && (
+            <div className="col-span-2">
+              <label className="font-semibold mb-1 block text-[#282526]">
+                Remarks 
+              </label>
+              <textarea
+                value={rejectRemark}
+                onChange={(e) => setRejectRemark(e.target.value)}
+                placeholder="Enter reason for rejection"
+                className="w-full border border-gray-300 rounded-lg bg-[#f6f6f6] outline-none 
+        focus:border-2 focus:bg-white focus:border-[#0B56A4] px-4 py-2 
+        placeholder-gray-400 text-sm"
+                required
               />
             </div>
           )}

@@ -13,6 +13,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import ApplicationEditAdmin from "./ApplicationEditAdmin";
 
 const renderField = (value) => {
   if (value === undefined || value === null || value === "") return "N/A";
@@ -89,6 +90,7 @@ export default function ApplicationDetail() {
   const [remarkModalOpen, setRemarkModalOpen] = useState(false);
   const [remarkText, setRemarkText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/application/${id}`)
@@ -203,18 +205,24 @@ export default function ApplicationDetail() {
           </span>
         </nav>
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => setEditModalOpen(true)}
+            className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
+          >
+            Edit
+          </button>
+
+          <button
+            disabled={loading}
+            onClick={handleApprove}
+            className="p-1 rounded-lg px-2 gap-1 flex items-center bg-green-100 text-green-600 hover:bg-green-200 cursor-pointer"
+            title="Approve"
+          >
+            <Check size={20} />
+            Approve
+          </button>
           {app.status === "Pending" && (
             <>
-              <button
-                disabled={loading}
-                onClick={handleApprove}
-                className="p-1 rounded-lg px-2 gap-1 flex items-center bg-green-100 text-green-600 hover:bg-green-200 cursor-pointer"
-                title="Approve"
-              >
-                <Check size={20} />
-                Approve
-              </button>
-
               <button
                 disabled={loading}
                 onClick={() => setRemarkModalOpen(true)}
@@ -828,6 +836,18 @@ export default function ApplicationDetail() {
           </dl>
         </section>
       </div>
+      {editModalOpen && (
+        <div className="fixed inset-0 tint flex items-center justify-center z-50">
+          <div className="bg-white border w-[70%] h-[90vh] p-4 rounded-2xl border-gray-300">
+            <ApplicationEditAdmin
+              open={editModalOpen}
+              setOpen={setEditModalOpen}
+              // app={app}
+              // setApp={setApp}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

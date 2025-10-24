@@ -690,11 +690,15 @@ export default function ApplicationListTable() {
                     className="rounded border-gray-300"
                   />
                 </td>
-                <td className="px-5 py-3 border-gray-200 truncate">{row.studentName}</td>
+                <td className="px-5 py-3 border-gray-200 truncate">
+                  {row.studentName}
+                </td>
                 <td className="px-5 py-3 border-gray-200 truncate">
                   {row.preferredCourse}
                 </td>
-                <td className="px-5 py-3 border-gray-200 truncate">{row.Quota}</td>
+                <td className="px-5 py-3 border-gray-200 truncate">
+                  {row.Quota}
+                </td>
                 <td className="px-5 py-3 border-gray-200">
                   {row.hostelDayScholar}
                 </td>
@@ -751,15 +755,25 @@ export default function ApplicationListTable() {
                       </button>
                     </>
                   ) : (
-                    <button
-                      onClick={() =>
-                        navigate(`/admin/application_list/${row._id}`)
-                      }
-                      className="p-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-                      title="View Details"
-                    >
-                      <Eye size={14} />
-                    </button>
+                    <>
+                     <button
+                        className="p-1.5 rounded-full bg-green-100 text-green-600 hover:bg-green-200"
+                        onClick={() => changeStatus(row._id)}
+                        title="Approve"
+                      >
+                        <Check size={14} />
+                      </button>
+                      <button
+                        onClick={() =>
+                          navigate(`/admin/application_list/${row._id}`)
+                        }
+                        className="p-1.5 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
+                        title="View Details"
+                      >
+                        <Eye size={14} />
+                      </button>
+                     
+                    </>
                   )}
                 </td>
               </tr>
