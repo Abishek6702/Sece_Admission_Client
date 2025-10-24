@@ -373,7 +373,7 @@ const ScholarshipListTable = () => {
               {/* Replace "Preferred Course" header */}
 
               {/* Graduate Filter */}
-              <th
+              {/* <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer"
                 onClick={() =>
                   setFilterOpen(filterOpen === "graduate" ? null : "graduate")
@@ -409,8 +409,8 @@ const ScholarshipListTable = () => {
                     onClose={() => setFilterOpen(null)}
                   />
                 )}
-              </th>
-              <th
+              </th> */}
+              {/* <th
                 className="px-5 py-3 relative border-gray-300 cursor-pointer"
                 onClick={() =>
                   setFilterOpen(filterOpen === "amount" ? null : "amount")
@@ -419,7 +419,7 @@ const ScholarshipListTable = () => {
                 <div className="flex items-center space-x-1 select-none whitespace-nowrap">
                   <span>Scholarship Amount</span>
                 </div>
-              </th>
+              </th> */}
               {/* Cutoff Filter */}
               {/* Replace "Cut Off" header with "Fees Paid" */}
               <th
@@ -508,12 +508,12 @@ const ScholarshipListTable = () => {
                 </td>
                 <td className="px-5 py-3  border-gray-200">{row.community}</td>
 
-                <td className="px-5 py-3 border-gray-200">
+                {/* <td className="px-5 py-3 border-gray-200">
                   {row.scholarshipType }
-                </td>
-                <td className="px-5 py-3 border-gray-200 truncate">
+                </td> */}
+                {/* <td className="px-5 py-3 border-gray-200 truncate">
                   {row.amount || "-"}
-                </td>
+                </td> */}
 
                 <td className="px-5 py-3 border-gray-200">
                   {row.feesPaid ? "Yes" : "No"}

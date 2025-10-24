@@ -400,7 +400,7 @@ const VisitorsListTable = () => {
                 )}
               </th>
 
-              <th
+              {/* <th
                 className="px-5 py-3 relative border-gray-300 cursor-pointer"
                 onClick={() =>
                   setFilterOpen(filterOpen === "course" ? null : "course")
@@ -436,7 +436,7 @@ const VisitorsListTable = () => {
                     onClose={() => setFilterOpen(null)}
                   />
                 )}
-              </th>
+              </th> */}
               {/* Graduate Filter */}
               <th
                 className="px-5 py-3 relative  border-gray-300 cursor-pointer whitespace-nowrap"
@@ -689,12 +689,12 @@ const VisitorsListTable = () => {
                   {row.studentName}
                 </td>
                 <td className="px-5 py-3  border-gray-200">{row.community}</td>
-                <td
+                {/* <td
                   className="px-3 py-2 border-gray-200 truncate max-w-xs"
                   
                 >
-                  {row.courseRequired[0]} {/* only show the first course */}
-                </td>
+                  {row.courseRequired[0]} 
+                </td> */}
 
                 <td className="px-5 py-3 border-gray-200">
                   {row.isFirstGraduate ? "Yes" : "No"}

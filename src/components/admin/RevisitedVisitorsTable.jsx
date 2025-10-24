@@ -687,7 +687,7 @@ const RevisitedVisitorsTable = () => {
                 <td className="px-5 py-3  border-gray-200">
                   {row.twelfthMarks?.cutOff}
                 </td>
-                <td className="px-5 py-3 border-gray-200">
+                <td className="px-5 py-3 border-gray-200 whitespace-nowrap">
                   {new Date(row.dateOfVisit).toISOString().split("T")[0]}
                 </td>
 

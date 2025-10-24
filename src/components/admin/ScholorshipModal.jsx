@@ -102,7 +102,7 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
             />
           </div>
 
-          {/* Scholarship Type & Amount (if Yes) */}
+          {/* Scholarship Type & Amount (if Yes)
           {hasScholarship && (
             <>
               <div className="col-span-1">
@@ -136,7 +136,7 @@ const ScholorshipModal = ({ setScholorModalOpen, onSave }) => {
                 />
               </div>
             </>
-          )}
+          )} */}
 
           {/* Fees Paid */}
           {/* Fees Paid & Finalized Course side by side */}

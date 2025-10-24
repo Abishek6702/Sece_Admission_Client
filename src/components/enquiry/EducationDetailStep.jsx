@@ -240,7 +240,8 @@ export default function EducationDetailStep({ data, errors, onChange }) {
             <option value="CBSE">CBSE</option>
             <option value="ICSE">ICSE</option>
             <option value="TN-HSC">TN-HSC</option>
-            <option value="ISC">IB</option>
+            <option value="ISC">ISE</option>
+            <option value="ISC">CAIE</option>
             <option value="Other">Other</option>
           </select>
           {errors.twelfthSchoolBoard && (
@@ -371,8 +372,9 @@ export default function EducationDetailStep({ data, errors, onChange }) {
             <option value="">Select Board</option>
             <option value="CBSE">CBSE</option>
             <option value="ICSE">ICSE</option>
-            <option value="TN-HSC">TN-SSLC</option>
-            <option value="ISC">IB</option>
+            <option value="TN-HSC">TN-SSlC</option>
+            <option value="ISC">ISE</option>
+            <option value="ISC">CAIE</option>
             <option value="Other">Other</option>
           </select>
 
