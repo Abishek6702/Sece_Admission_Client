@@ -7,7 +7,7 @@ import EducationalStep from "../application-form/EducationalStep";
 import ParentsDetailsStep from "../application-form/ParentsDetailsStep";
 import AdditionalInformationStep from "../application-form/AdditionalInformationStep";
 import DocumentsStep from "../application-form/DocumentsStep";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft,X } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 
 const titles = [
@@ -37,6 +37,8 @@ const titles = [
   },
 ];
 const defaultData = {
+  motherPhotoReason: "",
+  fatherPhotoReason: "",
   courseEntryType: "",
   studentName: "",
   gender: "",
@@ -351,6 +353,12 @@ const ApplicationFormData = ({initialData}) => {
   const [data, setData] = useState(defaultData);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showReasonModal, setShowReasonModal] = useState(false);
+  const [photoReasons, setPhotoReasons] = useState({
+    fatherPhotoReason: "",
+    motherPhotoReason: "",
+  });
+  const [reasonErrors, setReasonErrors] = useState({});
   const navigate = useNavigate();
   console.log("alk",initialData)
 
@@ -384,6 +392,97 @@ const ApplicationFormData = ({initialData}) => {
     }
   };
 
+  const checkParentPhotos = () => {
+    const isFatherPhotoMissing = !data.fatherPhoto || data.fatherPhoto.length === 0;
+    const isMotherPhotoMissing = !data.motherPhoto || data.motherPhoto.length === 0;
+    
+    return isFatherPhotoMissing || isMotherPhotoMissing;
+  };
+
+  const handleReasonSubmit = () => {
+    const newErrors = {};
+    const isFatherPhotoMissing = !data.fatherPhoto || data.fatherPhoto.length === 0;
+    const isMotherPhotoMissing = !data.motherPhoto || data.motherPhoto.length === 0;
+
+    if (isFatherPhotoMissing && !photoReasons.fatherPhotoReason.trim()) {
+      newErrors.fatherPhotoReason = "Father's photo reason is required";
+    }
+    if (isMotherPhotoMissing && !photoReasons.motherPhotoReason.trim()) {
+      newErrors.motherPhotoReason = "Mother's photo reason is required";
+    }
+
+    setReasonErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setShowReasonModal(false);
+      // ✅ Pass the reasons directly to submitApplication
+      submitApplication(photoReasons.fatherPhotoReason, photoReasons.motherPhotoReason);
+    }
+  };
+
+  // ✅ Accept reasons as parameters
+  const submitApplication = async (fatherReason = "", motherReason = "") => {
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("userId", userId);
+
+      // ✅ Append photo reasons directly
+      formData.append("fatherPhotoReason", fatherReason);
+      formData.append("motherPhotoReason", motherReason);
+
+      // Append regular fields
+      for (const key in data) {
+        const value = data[key];
+        
+        // Skip the reason fields as we're handling them separately
+        if (key === 'fatherPhotoReason' || key === 'motherPhotoReason') {
+          continue;
+        }
+
+        if (
+          typeof value === "object" &&
+          !Array.isArray(value) &&
+          value !== null
+        ) {
+          // Nested objects (like father, mother, addresses)
+          for (const subKey in value) {
+            formData.append(`${key}.${subKey}`, value[subKey]);
+          }
+        } else if (Array.isArray(value)) {
+          // For file arrays
+          value.forEach((file) => formData.append(key, file));
+        } else {
+          formData.append(key, value);
+        }
+      }
+
+      // Send POST request
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/application/`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Error:", result.message);
+        alert(result.message);
+      } else {
+        console.log("Success:", result);
+        navigate("/application-thank-you");
+      }
+    } catch (err) {
+      console.error("Submission failed", err);
+      alert("Submission failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleStepSubmit = async (e) => {
     e.preventDefault();
     const currentErrors = validate(data, step);
@@ -394,58 +493,17 @@ const ApplicationFormData = ({initialData}) => {
         setStep(step + 1);
         setErrors({});
       } else {
-        setLoading(true);
-        try {
-          const formData = new FormData();
-          formData.append("userId", userId);
-
-          // Append regular fields
-          for (const key in data) {
-            const value = data[key];
-            if (
-              typeof value === "object" &&
-              !Array.isArray(value) &&
-              value !== null
-            ) {
-              // Nested objects (like father, mother, addresses)
-              for (const subKey in value) {
-                formData.append(`${key}.${subKey}`, value[subKey]);
-              }
-            } else if (Array.isArray(value)) {
-              // For file arrays
-              value.forEach((file) => formData.append(key, file));
-            } else {
-              formData.append(key, value);
-            }
-          }
-
-          // Send POST request
-          const response = await fetch(
-            `${import.meta.env.VITE_API_BASE_URL}/api/application/`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            console.error("Error:", result.message);
-            alert(result.message);
-          } else {
-            console.log("Success:", result);
-            navigate("/application-thank-you");
-          }
-        } catch (err) {
-          console.error("Submission failed", err);
-          alert("Submission failed. Please try again.");
-        } finally {
-          setLoading(false);
+        // Check if parent photos are missing
+        if (checkParentPhotos()) {
+          setShowReasonModal(true);
+        } else {
+          // ✅ No reasons needed, pass empty strings
+          await submitApplication("", "");
         }
       }
     }
   };
+
 
   return (
     <>
@@ -526,6 +584,98 @@ const ApplicationFormData = ({initialData}) => {
           </div>
         </form>
       </div>
+      {showReasonModal && (
+        <div className="fixed inset-0 tint flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 playfair">
+                Parent Photo Missing
+              </h3>
+              <button
+                onClick={() => setShowReasonModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* <p className="text-gray-600 mb-4 text-sm">
+              Please provide reasons for missing parent photos
+            </p> */}
+
+            <div className="space-y-4">
+              {(!data.fatherPhoto || data.fatherPhoto.length === 0) && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Reason for Father's Photo Missing{" "}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={photoReasons.fatherPhotoReason}
+                    onChange={(e) =>
+                      setPhotoReasons((prev) => ({
+                        ...prev,
+                        fatherPhotoReason: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0B56A4] focus:border-transparent"
+                    rows="3"
+                    placeholder="Enter reason for father's photo missing..."
+                  />
+                  {reasonErrors.fatherPhotoReason && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {reasonErrors.fatherPhotoReason}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {(!data.motherPhoto || data.motherPhoto.length === 0) && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Reason for Mother's Photo Missing{" "}
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    value={photoReasons.motherPhotoReason}
+                    onChange={(e) =>
+                      setPhotoReasons((prev) => ({
+                        ...prev,
+                        motherPhotoReason: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0B56A4] focus:border-transparent"
+                    rows="3"
+                    placeholder="Enter reason for mother's photo missing..."
+                  />
+                  {reasonErrors.motherPhotoReason && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {reasonErrors.motherPhotoReason}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => setShowReasonModal(false)}
+                className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleReasonSubmit}
+                className="px-4 py-2 bg-[#0B56A4] text-white rounded-lg hover:bg-[#094680]"
+              >
+                Submit Application
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

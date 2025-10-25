@@ -56,7 +56,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
   }
 
   return (
-    <div className="flex items-center space-x-2 justify-end mt-4 select-none">
+    <div className="flex items-center space-x-2 justify-end mt-4 select-none w-[95%]">
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
@@ -370,7 +370,7 @@ export default function CourseTable() {
   return (
     <div>
       {/* Controls above table */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4  w-[96%]">
         <div className="flex items-center space-x-3  justify-between w-full">
           <div className="relative">
             <input
@@ -526,7 +526,7 @@ export default function CourseTable() {
       )}
 
       {/* Table with filters in headers */}
-      <div className="overflow-x-auto rounded-lg shadow-sm ">
+      <div className="overflow-x-auto rounded-lg shadow-sm w-[96%]  ">
         <table className="min-w-full border-collapse bg-white ">
           <thead className="bg-[#393738] text-white text-left text-sm font-medium ">
             <tr>

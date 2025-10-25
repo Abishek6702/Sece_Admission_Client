@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const qualificationOptions = [
   "High School",
@@ -16,6 +16,7 @@ const workTypeOptions = [
   "HouseWife",
   "Other",
 ];
+
 const incomeOptions = [
   "Below 1 Lakh",
   "1-5 Lakh",
@@ -23,6 +24,7 @@ const incomeOptions = [
   "10-20 Lakh",
   "Above 20 Lakh",
 ];
+
 const incomeMapping = {
   "Below 1 Lakh": 100000,
   "1-5 Lakh": 300000,
@@ -36,6 +38,57 @@ const ParentsDetailsStep = ({
   errors = {},
   onChange = () => {},
 }) => {
+  // ✅ State to track if "Other" is selected
+  const [fatherOtherWorkType, setFatherOtherWorkType] = useState("");
+  const [motherOtherWorkType, setMotherOtherWorkType] = useState("");
+
+  const [showFatherOtherInput, setShowFatherOtherInput] = useState(false);
+  const [showMotherOtherInput, setShowMotherOtherInput] = useState(false);
+  // ✅ Initialize custom work type if it's not in predefined options
+  useEffect(() => {
+    if (data.father?.workType) {
+      if (!workTypeOptions.includes(data.father.workType)) {
+        setFatherOtherWorkType(data.father.workType);
+        setShowFatherOtherInput(true);
+      } else {
+        setShowFatherOtherInput(false);
+      }
+    }
+  }, [data.father?.workType]);
+  useEffect(() => {
+    if (data.mother?.workType) {
+      if (!workTypeOptions.includes(data.mother.workType)) {
+        setMotherOtherWorkType(data.mother.workType);
+        setShowMotherOtherInput(true);
+      } else {
+        setShowMotherOtherInput(false);
+      }
+    }
+  }, [data.mother?.workType]);
+  const handleFatherWorkTypeChange = (value) => {
+    if (value === "Other") {
+      setShowFatherOtherInput(true);
+      onChange("father.workType", "");
+      setFatherOtherWorkType("");
+    } else {
+      setShowFatherOtherInput(false);
+      onChange("father.workType", value);
+      setFatherOtherWorkType("");
+    }
+  };
+
+  const handleMotherWorkTypeChange = (value) => {
+    if (value === "Other") {
+      setShowMotherOtherInput(true);
+      onChange("mother.workType", "");
+      setMotherOtherWorkType("");
+    } else {
+      setShowMotherOtherInput(false);
+      onChange("mother.workType", value);
+      setMotherOtherWorkType("");
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[56vh] pr-6 overflow-auto custom-scroll">
       {/* FATHER DETAILS */}
@@ -88,8 +141,14 @@ const ParentsDetailsStep = ({
               Work Type <span className="text-red-600">*</span>
             </label>
             <select
-              value={data.father?.workType || ""}
-              onChange={(e) => onChange("father.workType", e.target.value)}
+              value={
+                data.father?.workType && workTypeOptions.includes(data.father.workType)
+                  ? data.father.workType
+                  : data.father?.workType
+                  ? "Other"
+                  : ""
+              }
+              onChange={(e) => handleFatherWorkTypeChange(e.target.value)}
               className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
             >
               <option value="">Select Work Type</option>
@@ -103,6 +162,25 @@ const ParentsDetailsStep = ({
               <p className="text-red-500 text-sm">{errors.fatherWorkType}</p>
             )}
           </div>
+
+          {/* ✅ Show input field based on state */}
+          {showFatherOtherInput && (
+            <div>
+              <label className="font-semibold mb-1 block text-[#282526]">
+                Specify Work Type <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter work type"
+                value={data.father?.workType || fatherOtherWorkType}
+                onChange={(e) => {
+                  onChange("father.workType", e.target.value);
+                  setFatherOtherWorkType(e.target.value);
+                }}
+                className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+              />
+            </div>
+          )}
 
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
@@ -141,23 +219,20 @@ const ParentsDetailsStep = ({
           </div>
 
           <div>
-  <label className="font-semibold mb-1 block text-[#282526]">
-    Annual Income <span className="text-red-600">*</span>
-  </label>
-
-  <input
-    type="text"
-    value={data.father?.annualIncome || ""}
-    onChange={(e) => onChange("father.annualIncome", e.target.value)}
-    placeholder="Enter annual income"
-    className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
-  />
-
-  {errors.fatherIncome && (
-    <p className="text-red-500 text-sm">{errors.fatherIncome}</p>
-  )}
-</div>
-
+            <label className="font-semibold mb-1 block text-[#282526]">
+              Annual Income <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              value={data.father?.annualIncome || ""}
+              onChange={(e) => onChange("father.annualIncome", e.target.value)}
+              placeholder="Enter annual income"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+            />
+            {errors.fatherIncome && (
+              <p className="text-red-500 text-sm">{errors.fatherIncome}</p>
+            )}
+          </div>
 
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
@@ -209,7 +284,6 @@ const ParentsDetailsStep = ({
           Mother's Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Repeat same fields for Mother, changing father.* → mother.* and error keys */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
               Name <span className="text-red-600">*</span>
@@ -254,8 +328,14 @@ const ParentsDetailsStep = ({
               Work Type <span className="text-red-600">*</span>
             </label>
             <select
-              value={data.mother?.workType || ""}
-              onChange={(e) => onChange("mother.workType", e.target.value)}
+              value={
+                data.mother?.workType && workTypeOptions.includes(data.mother.workType)
+                  ? data.mother.workType
+                  : data.mother?.workType
+                  ? "Other"
+                  : ""
+              }
+              onChange={(e) => handleMotherWorkTypeChange(e.target.value)}
               className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
             >
               <option value="">Select Work Type</option>
@@ -265,12 +345,26 @@ const ParentsDetailsStep = ({
                 </option>
               ))}
             </select>
-            {errors.motherWorkType && (
-              <p className="text-red-500 text-sm">{errors.motherWorkType}</p>
-            )}
           </div>
 
-          {/* Organization Name */}
+          {/* ✅ Show input field based on state */}
+          {showMotherOtherInput && (
+            <div>
+              <label className="font-semibold mb-1 block text-[#282526]">
+                Specify Work Type <span className="text-red-600">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter work type"
+                value={data.mother?.workType || motherOtherWorkType}
+                onChange={(e) => {
+                  onChange("mother.workType", e.target.value);
+                  setMotherOtherWorkType(e.target.value);
+                }}
+                className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+              />
+            </div>
+          )}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
               Organization Name
@@ -291,7 +385,6 @@ const ParentsDetailsStep = ({
             )}
           </div>
 
-          {/* Designation */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
               Designation
@@ -308,27 +401,22 @@ const ParentsDetailsStep = ({
             )}
           </div>
 
-          {/* Annual Income */}
           <div>
-  <label className="font-semibold mb-1 block text-[#282526]">
-    Annual Income <span className="text-red-600">*</span>
-  </label>
+            <label className="font-semibold mb-1 block text-[#282526]">
+              Annual Income <span className="text-red-600">*</span>
+            </label>
+            <input
+              type="text"
+              value={data.mother?.annualIncome || ""}
+              onChange={(e) => onChange("mother.annualIncome", e.target.value)}
+              placeholder="Enter annual income"
+              className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
+            />
+            {errors.motherIncome && (
+              <p className="text-red-500 text-sm">{errors.motherIncome}</p>
+            )}
+          </div>
 
-  <input
-    type="text"
-    value={data.mother?.annualIncome || ""}
-    onChange={(e) => onChange("mother.annualIncome", e.target.value)}
-    placeholder="Enter annual income"
-    className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
-  />
-
-  {errors.motherIncome && (
-    <p className="text-red-500 text-sm">{errors.motherIncome}</p>
-  )}
-</div>
-
-
-          {/* Mobile */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
               Mobile
@@ -342,7 +430,6 @@ const ParentsDetailsStep = ({
             />
           </div>
 
-          {/* WhatsApp */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
               WhatsApp
@@ -356,10 +443,9 @@ const ParentsDetailsStep = ({
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="font-semibold mb-1 block text-[#282526]">
-              Email 
+              Email
             </label>
             <input
               type="email"
@@ -393,9 +479,6 @@ const ParentsDetailsStep = ({
                 onChange={(e) => onChange("guardian.name", e.target.value)}
                 className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
               />
-              {/* {errors.guardianName && (
-                <p className="text-red-500 text-sm">{errors.guardianName}</p>
-              )} */}
             </div>
 
             <div>
@@ -409,9 +492,6 @@ const ParentsDetailsStep = ({
                 onChange={(e) => onChange("guardian.mobile", e.target.value)}
                 className="w-full px-2 py-2 rounded-lg border border-gray-300 bg-[#f6f6f6] outline-none focus:border-2 focus:bg-white focus:border-[#0B56A4] placeholder-gray-400 text-sm"
               />
-              {/* {errors.guardianMobile && (
-                <p className="text-red-500 text-sm">{errors.guardianMobile}</p>
-              )} */}
             </div>
           </div>
         </div>

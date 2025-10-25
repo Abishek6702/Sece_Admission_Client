@@ -12,12 +12,14 @@ import {
 import ScholorshipModal from "./ScholorshipModal";
 
 import { toast } from "react-toastify";
+import EnquiryEditAdmin from "./EnquiryEditAdmin";
 
 export default function EnquiryDetail() {
   const { id } = useParams();
   const [enquiry, setEnquiry] = useState(null);
   const [scholarModalOpen, setScholarModalOpen] = useState(false);
   const [modalActionStatus, setModalActionStatus] = useState(""); // "Selected" or "Rejected"
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${id}`)
@@ -58,29 +60,33 @@ export default function EnquiryDetail() {
     }
   };
   const handleScholarshipSave = (fields) => {
-  // PATCH request
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${enquiry._id}/status`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ status: modalActionStatus, ...fields }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to update status");
-      return res.json();
-    })
-    .then((data) => {
-      toast.success("Status Updated Successfully");
-      setEnquiry((prev) => ({ ...prev, ...data }));
-      setScholarModalOpen(false);
-      setModalActionStatus("");
-    })
-    .catch((err) => {
-      toast.error("Error updating status");
-      setScholarModalOpen(false);
-      setModalActionStatus("");
-    });
-};
-
+    // PATCH request
+    fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${
+        enquiry._id
+      }/status`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: modalActionStatus, ...fields }),
+      }
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to update status");
+        return res.json();
+      })
+      .then((data) => {
+        toast.success("Status Updated Successfully");
+        setEnquiry((prev) => ({ ...prev, ...data }));
+        setScholarModalOpen(false);
+        setModalActionStatus("");
+      })
+      .catch((err) => {
+        toast.error("Error updating status");
+        setScholarModalOpen(false);
+        setModalActionStatus("");
+      });
+  };
 
   return (
     <div className=" max-w-6xl ">
@@ -102,7 +108,12 @@ export default function EnquiryDetail() {
           </span>
         </nav>
         <div className="flex items-center gap-4">
-          <button className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white">Edit</button>
+          <button
+            className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
+            onClick={() => setEditModalOpen(true)}
+          >
+            Edit
+          </button>
           {enquiry.status === "Pending" && (
             <>
               <button
@@ -205,6 +216,9 @@ export default function EnquiryDetail() {
             <dt className="font-medium">Tenth School Board:</dt>
             <dd>{enquiry.tenthSchoolBoard}</dd>
 
+            <dt className="font-medium">Tenth School Mark:</dt>
+            <dd>{enquiry.tenthMarks}</dd>
+
             <dt className="font-medium">Date of Visit:</dt>
             <dd>
               {enquiry.dateOfVisit
@@ -249,16 +263,32 @@ export default function EnquiryDetail() {
             <dd>{enquiry.motherMobile}</dd>
           </dl>
         </section>
+        <section className="bg-white p-6 shadow rounded-lg mb-4">
+          <h2 className="text-xl font-semibold text-[#0B56A4] mb-1 playfair">
+            Remarks
+          </h2>
+          <div className="border-b border-gray-300 mb-4"></div>
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <dt className="font-medium">Remark:</dt>
+            <dd>{enquiry.rejectRemark}</dd>
+          </dl>
+        </section>
       </div>
       {scholarModalOpen && (
-  <ScholorshipModal
-    setScholorModalOpen={setScholarModalOpen}
-    onSave={handleScholarshipSave}
-    status={modalActionStatus} // Pass info for approve/reject
-    existingData={enquiry}
-  />
-)}
-
+        <ScholorshipModal
+          setScholorModalOpen={setScholarModalOpen}
+          onSave={handleScholarshipSave}
+          status={modalActionStatus} // Pass info for approve/reject
+          existingData={enquiry}
+        />
+      )}
+      {editModalOpen && (
+        <div className="fixed inset-0 tint flex items-center justify-center z-50">
+          <div className="bg-white border w-[70%] h-[98vh] p-4 rounded-2xl border-gray-300">
+            <EnquiryEditAdmin open={editModalOpen} setOpen={setEditModalOpen} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

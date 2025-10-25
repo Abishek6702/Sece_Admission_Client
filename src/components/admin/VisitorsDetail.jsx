@@ -7,13 +7,17 @@ import {
   Home,
   Layout,
   LayoutDashboard,
+  Pen,
   X,
 } from "lucide-react";
 import { toast } from "react-toastify";
+import EnquiryEditAdmin from "./EnquiryEditAdmin";
 
 export default function VisitorsDetail() {
   const { id } = useParams();
   const [enquiry, setEnquiry] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${id}`)
@@ -73,8 +77,14 @@ export default function VisitorsDetail() {
             {enquiry.studentName}
           </span>
         </nav>
-          {/* <div className="flex items-center gap-4">
-            {enquiry.status === "Pending" && (
+          <div className="flex items-center gap-4">
+          <button
+            onClick={() => setEditModalOpen(true)}
+            className="px-4 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
+          >
+            <Pen className="w-4"/>Edit
+          </button>
+            {/* {enquiry.status === "Pending" && (
               <>
                 <button
                   onClick={() => changeStatus("Selected")}
@@ -93,8 +103,8 @@ export default function VisitorsDetail() {
                   Reject
                 </button>
               </>
-            )}
-          </div> */}
+            )} */}
+          </div>
       </div>
 
       {/* <h1 className="text-3xl font-bold mb-8">{enquiry.studentName}</h1> */}
@@ -215,6 +225,13 @@ export default function VisitorsDetail() {
           </dl>
         </section>
       </div>
+      {editModalOpen && (
+              <div className="fixed inset-0 tint flex items-center justify-center z-50">
+                <div className="bg-white border w-[70%] h-[98vh] p-4 rounded-2xl border-gray-300">
+                  <EnquiryEditAdmin open={editModalOpen} setOpen={setEditModalOpen} />
+                </div>
+              </div>
+            )}
     </div>
   );
 }

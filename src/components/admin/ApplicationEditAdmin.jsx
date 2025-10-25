@@ -37,110 +37,16 @@ const titles = [
     description: "Furnish all the required documents with proper formatting",
   },
 ];
-const initialData = {
-  courseEntryType: "",
-  studentName: "",
-  gender: "",
-  preferredCourse: "",
-  quota: "",
-  permanentAddress: {
-    doorNo: "",
-    street: "",
-    taluk: "",
-    district: "",
-    state: "",
-    pincode: "",
-  },
-  temporaryAddress: {
-    doorNo: "",
-    street: "",
-    taluk: "",
-    district: "",
-    state: "",
-    pincode: "",
-  },
-  dob: "",
-  community: "",
-  casteName: "",
-  communityCertificateNo: "",
-  motherTongue: "",
-  religion: "",
-  nationality: "",
-  bloodGroup: "",
-  aadharNo: "",
-  selfMobileNo: "",
-  selfWhatsapp: "",
-  selfEmail: "",
-  insuranceNominee: "",
-  hostelDayScholar: "",
-  emisNo: "",
-  siblingsStudyingHere: false,
-  siblingDetails: {
-    name: "",
-    rollNo: "",
-    department: "",
-    yearOfAdmission: "",
-  },
-  careerOption: "",
-  father: {
-    name: "",
-    qualification: "",
-    workType: "",
-    organizationName: "",
-    designation: "",
-    annualIncome: 0,
-    mobile: "",
-    whatsapp: "",
-    email: "",
-  },
-  mother: {
-    name: "",
-    qualification: "",
-    workType: "",
-    organizationName: "",
-    designation: "",
-    annualIncome: 0,
-    mobile: "",
-    whatsapp: "",
-    email: "",
-  },
-  guardian: {
-    name: "",
-    mobile: "",
-  },
-  familyIncomeAsPerCertificate: 0,
-  incomeCertificateNo: "",
-  counsellingApplicationNo: "",
-  counsellingOverallRank: "",
-  counsellingCommunityRank: "",
-  isFirstGraduate: false,
-  firstGraduateNumber: "",
-  studentPhoto: [],
-  fatherPhoto: [],
-  motherPhoto: [],
-  tenthMarkSheet: "",
-  eleventhMarkSheet: "",
-  twelthMarkSheet: "",
-  transferCertificate: "",
-  communityCertificate: "",
-  incomeCertificate: "",
-  migrationCertificate: "",
-  aadharCopy: "",
-  allotmentOrder: "",
-  firstGraduateCertificate: "",
-  declarationForm: "",
-  physicalFitnessForm: "",
-};
+
 function validate(data, step) {
   return {}; // skip all validation for now
 }
 
-const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
+const ApplicationEditAdmin = ({ open, setOpen }) => {
   const [step, setStep] = useState(0);
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [disabled, setDisabled] = useState(true);
   const [applicationId, setApplicationId] = useState(null);
   const { id } = useParams();
 
@@ -153,16 +59,16 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
     const decoded = jwtDecode(token);
     userId = decoded.id;
   }
+
   useEffect(() => {
     if (id) {
-      setApplicationId(id); // ✅ Correct usage of setState
+      setApplicationId(id);
       console.log("params set from id:", id);
     }
   }, [id]);
 
   useEffect(() => {
     if (applicationId) {
-      // Fetch application data
       const fetchApplicationData = async () => {
         try {
           const response = await fetch(
@@ -174,17 +80,111 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
             throw new Error("Failed to fetch application data");
           }
           const applicationData = await response.json();
-          console.log("data from ak",applicationData.data);
-          setData(applicationData.data); // Update form state with fetched data
+          console.log("Raw data from API:", applicationData.data);
+
+          // ✅ Clean the fetched data before setting to state
+          const cleanedData = cleanApplicationData(applicationData.data);
+          console.log("Cleaned data for form:", cleanedData);
+
+          setData(cleanedData);
         } catch (error) {
           console.error(error);
-          alert("Error loading application data");
+          toast.error("Error loading application data");
         }
       };
 
       fetchApplicationData();
     }
   }, [applicationId]);
+
+  // In ApplicationEditAdmin.jsx
+
+  // ✅ Update cleanApplicationData function
+  const cleanApplicationData = (fetchedData) => {
+    const cleaned = {};
+  
+    // List of fields to keep (all your form fields)
+    const formFields = [
+      "courseEntryType",
+      "studentName",
+      "gender",
+      "preferredCourse",
+      "Quota",
+      "permanentAddress",
+      "temporaryAddress",
+      "dob",
+      "community",
+      "casteName",
+      "communityCertificateNo",
+      "motherTongue",
+      "religion",
+      "nationality",
+      "bloodGroup",
+      "aadharNo",
+      "selfMobileNo",
+      "selfWhatsapp",
+      "selfEmail",
+      "insuranceNominee",
+      "hostelDayScholar",
+      "emisNo",
+      "siblingsStudyingHere",
+      "siblingDetails",
+      "careerOption",
+      "father",
+      "mother",
+      "guardian",
+      "familyIncomeAsPerCertificate",
+      "incomeCertificateNo",
+      "counsellingApplicationNo",
+      "counsellingOverallRank",
+      "counsellingCommunityRank",
+      "isFirstGraduate",
+      "firstGraduateNumber",
+      "studentPhoto",
+      "fatherPhoto",
+      "motherPhoto",
+      "tenthMarkSheet",
+      "eleventhMarkSheet",
+      "twelthMarkSheet",
+      "transferCertificate",
+      "communityCertificate",
+      "incomeCertificate",
+      "migrationCertificate",
+      "aadharCopy",
+      "allotmentOrder",
+      "firstGraduateCertificate",
+      "declarationForm",
+      "physicalFitnessForm",
+    ];
+  
+    // ✅ Nested object fields that need _id removed
+    const nestedObjectFields = [
+      'permanentAddress',
+      'temporaryAddress',
+      'siblingDetails',
+      'father',
+      'mother',
+      'guardian'
+    ];
+  
+    // Copy only form fields and clean nested objects
+    formFields.forEach((field) => {
+      if (fetchedData.hasOwnProperty(field)) {
+        // ✅ Remove _id from nested objects
+        if (nestedObjectFields.includes(field) && typeof fetchedData[field] === 'object' && fetchedData[field] !== null) {
+          const cleanedNested = { ...fetchedData[field] };
+          delete cleanedNested._id;
+          cleaned[field] = cleanedNested;
+        } else {
+          cleaned[field] = fetchedData[field];
+        }
+      }
+    });
+  
+    return cleaned;
+  };
+  
+
   const handleChange = (name, value) => {
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
@@ -204,7 +204,7 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
     e.preventDefault();
     const currentErrors = validate(data, step);
     setErrors(currentErrors);
-
+  
     if (Object.keys(currentErrors).length === 0) {
       if (step < 5) {
         setStep(step + 1);
@@ -213,68 +213,126 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
         setLoading(true);
         try {
           const formData = new FormData();
-          //   formData.append("userId", userId);
-
-          // Append regular fields
+  
+          // ✅ Track files to be deleted
+          const filesToDelete = [];
+  
+          // List of file fields
+          const singleFileFields = [
+            'tenthMarkSheet',
+            'eleventhMarkSheet',
+            'twelthMarkSheet',
+            'transferCertificate',
+            'communityCertificate',
+            'incomeCertificate',
+            'migrationCertificate',
+            'aadharCopy',
+            'allotmentOrder',
+            'firstGraduateCertificate',
+            'declarationForm',
+            'physicalFitnessForm'
+          ];
+  
+          const multiFileFields = [
+            'studentPhoto',
+            'fatherPhoto',
+            'motherPhoto'
+          ];
+  
+          // ✅ Append all form data
           for (const key in data) {
-            // Skip remarks entirely
-            if (key === "remarks") continue;
-
             const value = data[key];
-
-            if (Array.isArray(value)) {
-              // For files or arrays of primitives
-              value.forEach((item) => formData.append(key, item));
-            } else if (typeof value === "object" && value !== null) {
-              // Nested object, convert to JSON string
+  
+            // ✅ Handle new file uploads (File objects)
+            if (value instanceof File) {
+              formData.append(key, value);
+            }
+            // ✅ Handle photo arrays
+            else if (Array.isArray(value)) {
+              const hasFiles = value.some((item) => item instanceof File);
+              if (hasFiles) {
+                value.forEach((item) => {
+                  if (item instanceof File) {
+                    formData.append(key, item);
+                  }
+                });
+              } else if (value.length === 0 && multiFileFields.includes(key)) {
+                // ✅ Array is empty - mark for deletion
+                filesToDelete.push(key);
+              }
+            }
+            // ✅ Handle single file fields
+            else if (singleFileFields.includes(key)) {
+              if (value === '' || value === null || value === undefined) {
+                // ✅ Field is empty - mark for deletion
+                filesToDelete.push(key);
+              }
+              // If it's a string path, don't send it (keep existing)
+            }
+            // ✅ Handle nested objects
+            else if (typeof value === "object" && value !== null) {
               formData.append(key, JSON.stringify(value));
-            } else {
+            }
+            // ✅ Handle regular fields
+            else if (value !== "" && value !== null && value !== undefined) {
               formData.append(key, value);
             }
           }
-
-          // Send POST request
-          // const response = await fetch(
-          //   `${
-          //     import.meta.env.VITE_API_BASE_URL
-          //   }/api/application/${applicationId}/resubmit`,
-          //   {
-          //     method: "PUT",
-          //     body: formData,
-          //   }
-          // );
-
+  
+          // ✅ Send list of files to delete
+          if (filesToDelete.length > 0) {
+            formData.append('filesToDelete', JSON.stringify(filesToDelete));
+          }
+  
+          console.log("Files to delete:", filesToDelete);
+          console.log("FormData being sent:");
+          for (let pair of formData.entries()) {
+            console.log(pair[0], ":", pair[1]);
+          }
+  
+          const response = await fetch(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/api/application/${applicationId}`,
+            {
+              method: "PUT",
+              body: formData,
+            }
+          );
+  
           const result = await response.json();
-
+  
           if (!response.ok) {
             console.error("Error:", result.message);
-            alert(result.message);
+            toast.error(result.message || "Failed to update application");
           } else {
-            toast.success(`Remark Submitted Sucessfully`, {
-              onClose: () => window.location.reload(),
+            toast.success("Application updated successfully!", {
+              onClose: () => {
+                setOpen(false);
+                window.location.reload();
+              },
             });
-            // console.log("Success:", result);
-            // navigate("/dashboard");
           }
         } catch (err) {
-          console.error("Submission failed", err);
-          alert("Submission failed. Please try again.");
+          console.error("Update failed", err);
+          toast.error("Update failed. Please try again.");
         } finally {
           setLoading(false);
         }
       }
     }
   };
-
+  
+console.log("data from back:",data)
   return (
     <>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between">
-          <div className="flex justify-between items-center  w-full">
+          <div className="flex justify-between items-center w-full">
             <h2 className="text-2xl font-bold playfair">
               {titles[step].heading}
             </h2>
-             
+
             <div
               className="bg-gray-300 text-gray-700 cursor-pointer rounded-full p-1"
               onClick={() => setOpen(false)}
@@ -282,7 +340,6 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
               <X />
             </div>
           </div>
-         
         </div>
 
         <p className="text-gray-500 mb-4">{titles[step].description}</p>
@@ -355,12 +412,11 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
                     : "bg-[#0B56A4] text-white"
                 }`}
               >
-                {loading ? "Submitting..." : "Next Step"}
+                {loading ? "Processing..." : "Next Step"}
               </button>
             )}
 
-            {/* Only show Complete Submission button if NOT disabled */}
-            {step === 5  && (
+            {step === 5 && (
               <button
                 type="submit"
                 disabled={loading}
@@ -370,7 +426,7 @@ const ApplicationEditAdmin = ({ initialData, open, setOpen }) => {
                     : "bg-[#0B56A4] text-white"
                 }`}
               >
-                {loading ? "Submitting..." : "Complete Submission"}
+                {loading ? "Updating..." : "Update Application"}
               </button>
             )}
           </div>

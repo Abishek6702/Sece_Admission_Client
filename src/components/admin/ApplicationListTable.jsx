@@ -380,7 +380,7 @@ export default function ApplicationListTable() {
   if (error) return <div>Error loading data: {error}</div>;
 
   return (
-    <div className=" w-[96%]">
+    <div className=" w-[95%]">
       {/* Toolbar */}
       <div className="flex items-center justify-between mb-4 ">
         <div className="flex items-center space-x-3  justify-between w-full">

@@ -11,6 +11,7 @@ import {
   UserRound,
   FileImage,
   MessageSquare,
+  Pen,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import ApplicationEditAdmin from "./ApplicationEditAdmin";
@@ -207,9 +208,9 @@ export default function ApplicationDetail() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setEditModalOpen(true)}
-            className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
+            className="px-4 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
           >
-            Edit
+            <Pen className="w-4"/>Edit
           </button>
 
           <button
@@ -829,6 +830,28 @@ export default function ApplicationDetail() {
               {app.remarks && app.remarks.length > 0
                 ? app.remarks[app.remarks.length - 1].remark
                 : "No remarks yet"}
+            </dd>
+
+            {/* <dt className="font-medium">Submission Count:</dt>
+            <dd>{renderField(app.submissionCount)}</dd> */}
+          </dl>
+        </section>
+        <section className="bg-white px-5 py-3 shadow rounded-lg mb-4">
+          <h2 className="text-xl font-semibold text-[#0B56A4] mb-1">
+            Parents Photo Reasons
+          </h2>
+          <div className="border-b border-gray-300 mb-4"></div>
+          <dl className="grid grid-cols-4 gap-x-10 gap-y-3 text-sm">
+            
+            <dt className="font-medium">Father's photo Reason:</dt>
+            <dd>
+            {app.fatherPhotoReason }
+
+            </dd>
+            <dt className="font-medium">Mother's photo Reason:</dt>
+            <dd>
+              {app.motherPhotoReason }
+               
             </dd>
 
             {/* <dt className="font-medium">Submission Count:</dt>
