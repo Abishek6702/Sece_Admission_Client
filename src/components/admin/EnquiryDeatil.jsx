@@ -7,6 +7,7 @@ import {
   Home,
   Layout,
   LayoutDashboard,
+  Pen,
   X,
 } from "lucide-react";
 import ScholorshipModal from "./ScholorshipModal";
@@ -109,9 +110,10 @@ export default function EnquiryDetail() {
         </nav>
         <div className="flex items-center gap-4">
           <button
-            className="px-6 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
+            className="px-4 py-1 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer bg-[#0B56A4] text-white"
             onClick={() => setEditModalOpen(true)}
           >
+            <Pen className="w-4"/>
             Edit
           </button>
           {enquiry.status === "Pending" && (
@@ -183,6 +185,27 @@ export default function EnquiryDetail() {
             <dd>
               {address.doorNo}, {address.street}, {address.taluk},{" "}
               {address.district}, {address.state} - {address.pincode}
+            </dd>
+            <dt className="font-medium">Enquiry:</dt>
+            <dd>
+              {enquiry.enquiryPdfUrl ? (
+                <a
+                  href={
+                    enquiry.enquiryPdfUrl.startsWith("http")
+                      ? enquiry.enquiryPdfUrl
+                      : `${import.meta.env.VITE_API_BASE_URL}${
+                          enquiry.enquiryPdfUrl
+                        }`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  Print Enquiry
+                </a>
+              ) : (
+                "No PDF available"
+              )}
             </dd>
           </dl>
         </section>

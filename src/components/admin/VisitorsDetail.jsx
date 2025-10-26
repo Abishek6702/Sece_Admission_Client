@@ -148,6 +148,27 @@ export default function VisitorsDetail() {
               {address.doorNo}, {address.street}, {address.taluk},{" "}
               {address.district}, {address.state} - {address.pincode}
             </dd>
+            <dt className="font-medium">Enquiry:</dt>
+            <dd>
+              {enquiry.enquiryPdfUrl ? (
+                <a
+                  href={
+                    enquiry.enquiryPdfUrl.startsWith("http")
+                      ? enquiry.enquiryPdfUrl
+                      : `${import.meta.env.VITE_API_BASE_URL}${
+                          enquiry.enquiryPdfUrl
+                        }`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  Print Enquiry
+                </a>
+              ) : (
+                "No PDF available"
+              )}
+            </dd>
           </dl>
         </section>
 
