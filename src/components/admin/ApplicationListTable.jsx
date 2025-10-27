@@ -756,13 +756,13 @@ export default function ApplicationListTable() {
                     </>
                   ) : (
                     <>
-                     <button
+                     {/* <button
                         className="p-1.5 rounded-full bg-green-100 text-green-600 hover:bg-green-200"
                         onClick={() => changeStatus(row._id)}
                         title="Approve"
                       >
                         <Check size={14} />
-                      </button>
+                      </button> */}
                       <button
                         onClick={() =>
                           navigate(`/admin/application_list/${row._id}`)

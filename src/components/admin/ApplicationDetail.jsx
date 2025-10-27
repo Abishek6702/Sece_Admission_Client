@@ -213,7 +213,10 @@ export default function ApplicationDetail() {
             <Pen className="w-4"/>Edit
           </button>
 
-          <button
+          
+          {app.status === "Pending" && (
+            <>
+            <button
             disabled={loading}
             onClick={handleApprove}
             className="p-1 rounded-lg px-2 gap-1 flex items-center bg-green-100 text-green-600 hover:bg-green-200 cursor-pointer"
@@ -222,8 +225,6 @@ export default function ApplicationDetail() {
             <Check size={20} />
             Approve
           </button>
-          {app.status === "Pending" && (
-            <>
               <button
                 disabled={loading}
                 onClick={() => setRemarkModalOpen(true)}
