@@ -87,6 +87,12 @@ function validate(data, step, linkedin) {
     if (!data.address.pincode) errors.pincode = "Pincode required";
     if (!data.community) errors.community = "Community required";
     // if (!data.studentEmail) errors.studentEmail = "Student Email required";
+    if (!data.studentMobile) {
+      errors.studentMobile = "Student Mobile required";
+    } else if (!mobileRegex.test(data.fatherMobile)) {
+      errors.studentMobile =
+        "Enter a valid 10-digit mobile number (not starting with 0)";
+    }
 
     if (!data.fatherMobile) {
       errors.fatherMobile = "Father Mobile required";

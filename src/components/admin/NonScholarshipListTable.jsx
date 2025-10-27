@@ -121,6 +121,8 @@ const NonScholarshipListTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+    const [exporting, setExporting] = useState(false);
+
 
 
   const rowsPerPage = 6;
@@ -276,6 +278,51 @@ const NonScholarshipListTable = () => {
       setLoading(false);
     }
   };
+    const handleExportPDF = async () => {
+    setExporting(true);
+    let exportPayload;
+
+    if (selectedRows.length > 0) {
+      // Export only selected rows by their _id
+      exportPayload = { selectedIds: selectedRows };
+    } else {
+    // No checkboxes: export PDF of visible/filtered/paged rows only
+    const pageRowIds = currentRows.map(row => row._id);
+    exportPayload = { selectedIds: pageRowIds };
+  }
+
+    try {
+      // Send payload to backend PDF endpoint
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/scholarpdf`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(exportPayload),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to export PDF");
+
+      // Download the PDF file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "enquiries.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success("PDF export successful");
+    } catch (err) {
+      console.error(err);
+      toast.error("Export failed: " + err.message);
+    } finally {
+      setExporting(false);
+    }
+  };
   return (
     <div>
       {/* Controls above table */}
@@ -311,6 +358,19 @@ const NonScholarshipListTable = () => {
             >
               <Download className="w-4" />
               Export{" "}
+              {selectedRows.length > 0 && (
+                <span className="badge">({selectedRows.length})</span>
+              )}
+            </button>
+            <button
+              className={`bg-[#0b56a4] text-white px-4 py-1 rounded-lg flex items-center gap-2 cursor-pointer ${
+                exporting ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={handleExportPDF}
+              disabled={exporting}
+            >
+              <Download className="w-4" />
+              {exporting ? "Exporting..." : "Export PDF"}
               {selectedRows.length > 0 && (
                 <span className="badge">({selectedRows.length})</span>
               )}
