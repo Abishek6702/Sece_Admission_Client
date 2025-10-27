@@ -257,9 +257,14 @@ export default function CourseTable() {
           (!dateFilter.to || new Date(d.dateOfVisit) <= new Date(dateFilter.to))
         : true;
 
-    const searchMatch = search
-      ? d.studentName.toLowerCase().includes(search.toLowerCase())
-      : true;
+    const searchLower = search.trim().toLowerCase();
+const searchMatch = search
+  ? (
+      (d.studentName && d.studentName.toLowerCase().includes(searchLower)) ||
+      (d.enquiryId && d.enquiryId.toString().toLowerCase().includes(searchLower))
+    )
+  : true;
+
 
     return (
       courseMatch &&
@@ -433,7 +438,7 @@ export default function CourseTable() {
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              placeholder="Search by name..."
+              placeholder="Search by name & ID..."
               className="border bg-white border-gray-300 rounded-lg px-3 py-2 text-sm w-64 focus:outline-none focus:ring-1 focus:ring-[#0b56a4]"
             />
             <Search className="absolute top-2 right-2 text-gray-400 w-4" />

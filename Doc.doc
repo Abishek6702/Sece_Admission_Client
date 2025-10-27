@@ -1,0 +1,71 @@
+Hi {{1}}, 👋  
+
+Welcome to SECE Admission Portal 🎉  
+Your student portal account has been successfully created.  
+
+You can log in using the details below:  
+🔗 Portal Link: {{2}}  
+🆔 Login ID: {{3}}  
+🔐 Password: {{4}}  
+
+Please log in and complete your Application at your earliest convenience.  
+If you need help,  contact our support team.  
+
+– Team SECE Admission
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Hi {{1}}, 👋  
+
+We received a request to reset your SECE Admission account password.  
+
+Your account email is: 🔢 {{2}}  
+Your one-time password (OTP) is: 🔢 {{3}}  
+
+If you didn’t request a password reset, please ignore this message.  
+
+– Team SECE Admission
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Hi {{1}}, 👋  
+
+Thank you for submitting your admission enquiry! 🎓 
+
+We’ve received your details successfully.  
+Our admissions team will review your enquiry and contact you soon.   
+
+We look forward to helping you start your journey with!  
+
+📱 Follow us on LinkedIn for updates and campus news:  
+https://www.linkedin.com/school/srieshwar/ 
+
+– Team SECE Admission
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Hi {{1}}, 👋  
+
+Thank you for submitting your admission application! 🎓  
+
+We’ve received your details successfully.  
+Our admissions team will review your documents and contact you regarding the next steps.  
+ 
+We’re excited to have you as a part of SECE family!  
+
+– Team SECE Admission
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Hi {{1}}, 👋  
+
+Your admission application has been reviewed and needed few correction from your side.  
+
+📝 Remark: {{2}}  
+
+If any further action is required, please follow the instructions mentioned above or contact our admissions team.  
+
+📞 For assistance, reach our admission team.  
+
+– Team SECE Admission
+
