@@ -9,7 +9,7 @@ import {
 import ApplicationList from "../components/admin/ApplicationList";
 import EnquirList from "../components/admin/EnquiryList";
 import Dashboard from "../components/admin/Dashboard";
-import AdminSidebar from "../components/admin/AdminSidebar";
+import AdminSidebar from "../components/admin/Adminsidebar.jsx";
 import EnquiryDeatil from "../components/admin/EnquiryDeatil";
 import FinalizedEnquiries from "../components/admin/FinalizedEnquiries";
 import ApplicationDetail from "../components/admin/ApplicationDetail";
@@ -20,6 +20,10 @@ import ReVisitedDeatil from "../components/admin/ReVisitedDetail";
 import ScholarshipList from "../components/admin/ScholarshipList";
 import ScholarshipDetail from "../components/admin/ScholarshipDetail.jsx";
 import FinalizedDetail from "../components/admin/FinalizedDetail.jsx";
+import UploadPage from "../pages/UploadPage.jsx";
+import { Upload } from "lucide-react";
+
+
 
 const TABS = {
   DASHBOARD: "dashboard",
@@ -28,6 +32,7 @@ const TABS = {
   FINALIZED_ENQUIRIES: "finalized_enquiries",
   VISITORS_LIST: "visitors_list",
   SCHOLARSHIP_LIST: "scholarship_list",
+  Uploads:"upload"
 };
 
 const AdminDashboard = () => {
@@ -69,6 +74,7 @@ const AdminDashboard = () => {
             <Route path="visitors_list/:id" element={<VisitorsDetail />} />
             <Route path="revisited_list/:id" element={<ReVisitedDeatil />} />
             <Route path="scholarship_list/:id" element={<ScholarshipDetail />} />
+            <Route path="upload" element={<UploadPage/>}/>
 
 
             {/* <Route path="vistiors_list/:id" element */}

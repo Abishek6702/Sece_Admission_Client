@@ -11,6 +11,7 @@ import {
   FileCheck,
   IdCardLanyard,
   CircleStar,
+  Upload,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -51,6 +52,8 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       Icon: FileCheck,
     },
     { id: "application_list", label: "Application List", Icon: FileText },
+    { id: "upload", label: "Uploads", Icon: Upload },
+
     
 
     // {
@@ -67,6 +70,7 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
       "scholarship_list",
       "finalized_enquiries",
       "application_list",
+      "upload"
     ],
     Staff: ["dashboard", "visitors_list"],
   };

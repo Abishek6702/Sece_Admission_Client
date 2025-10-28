@@ -21,64 +21,98 @@ const ApplicationForm = () => {
 
   useEffect(() => {
     async function fetchInitialData() {
-      if (!enquiryId) {
-        setFetchingInitial(false);
-        return;
-      }
       setFetchingInitial(true);
-      try {
-        const resp = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${enquiryId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+  
+      // If enquiryId present, fetch enquiry data as before
+      if (enquiryId && enquiryId !== "null" && enquiryId !== "undefined") {
+        try {
+          const resp = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/enquiries/${enquiryId}`,
+            {
+              method: "GET",
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const result = await resp.json();
+  
+          if (resp.ok && result) {
+            const filteredInitial = {
+              studentName: result.studentName || "",
+              gender: result.gender || "",
+              dob: result.dob || "",
+              community: result.community || "",
+              permanentAddress: {
+                doorNo: result.address?.doorNo || "",
+                street: result.address?.street || "",
+                taluk: result.address?.taluk || "",
+                district: result.address?.district || "",
+                state: result.address?.state || "",
+                pincode: result.address?.pincode || "",
+              },
+              temporaryAddress: {
+                doorNo: result.address?.doorNo || "",
+                street: result.address?.street || "",
+                taluk: result.address?.taluk || "",
+                district: result.address?.district || "",
+                state: result.address?.state || "",
+                pincode: result.address?.pincode || "",
+              },
+              selfEmail: result.studentEmail || "",
+              selfMobileNo: result.studentMobile || "",
+              selfWhatsapp: result.studentMobile || "",
+              courseEntryType: result.courseEntryType || "",
+              preferredCourse: result.finalizedCourse || "",
+              finalizedCourse: result.finalizedCourse || "",
+              quota: result.allocatedQuota || "",
+            };
+            setEnquiryData(filteredInitial);
           }
-        );
-        const result = await resp.json();
-
-        if (resp.ok && result) {
-          // Filter only selected fields for prefill
-          const filteredInitial = {
-            studentName: result.studentName || "",
-            gender: result.gender || "",
-            dob: result.dob || "",
-            community: result.community || "",
-            permanentAddress: {
-              doorNo: result.address?.doorNo || "",
-              street: result.address?.street || "",
-              taluk: result.address?.taluk || "",
-              district: result.address?.district || "",
-              state: result.address?.state || "",
-              pincode: result.address?.pincode || "",
-            },
-            temporaryAddress: {
-              doorNo: result.address?.doorNo || "",
-              street: result.address?.street || "",
-              taluk: result.address?.taluk || "",
-              district: result.address?.district || "",
-              state: result.address?.state || "",
-              pincode: result.address?.pincode || "",
-            },
-            selfEmail: result.studentEmail || "",
-            selfMobileNo: result.studentMobile || "",
-            selfWhatsapp: result.studentMobile || "",
-            courseEntryType: result.courseEntryType || "",
-            preferredCourse: result.finalizedCourse || "",
-            finalizedCourse: result.finalizedCourse || "",
-            quota: result.allocatedQuota || "",
-          };
-          setEnquiryData(filteredInitial);
+        } catch (err) {
+          console.error("Failed to load enquiry data", err);
+          setEnquiryData(null);
+        } finally {
+          setFetchingInitial(false);
         }
-      } catch (err) {
-        console.error("Failed to load enquiry data", err);
+      } 
+      // Otherwise fetch user prefill data by userId from token
+      else if (userId) {
+        try {
+          const resp = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/auth/${userId}`,
+            {
+              method: "GET",
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const result = await resp.json();
+          console.log("test:",result)
+          if (resp.ok && result) {
+            const filteredInitial = {
+              studentName: result.name || "",
+              quota: result.prefillData?.quota || "",
+              finalizedCourse: result.prefillData?.finalizedCourse || "",
+              courseEntryType: result.prefillData?.courseEntryType || "",
+              preferredCourse: result.prefillData?.finalizedCourse || "",  // use prefillData here
+              dob: result.prefillData?.dob || "",
+            };
+            setEnquiryData(filteredInitial);
+          }
+        } catch (err) {
+          console.error("Failed to load user data", err);
+          setEnquiryData(null);
+        } finally {
+          setFetchingInitial(false);
+        }
+      } else {
+        // No enquiry or userId means no initial data
+        setFetchingInitial(false);
         setEnquiryData(null);
       }
-      setFetchingInitial(false);
     }
+  
     fetchInitialData();
-  }, [enquiryId, token]);
+  }, [enquiryId, userId, token]);
+  
   console.log("EnquiryData:", fetchingInitial);
 
   return (
