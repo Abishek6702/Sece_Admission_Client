@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,77 +10,65 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const allData = {
-  2023: {
-    BE: { labels: ["ECE", "CSE"], counts: [100, 120] },
-    BTech: { labels: ["CSBS"], counts: [80] },
-    ME: { labels: [], counts: [] },
-  },
-  2025: {
-    BE: {
-      labels: ["ECE", "CSE", "Cyber Security", "EEE", "MECH", "AI-ML", "CCE"],
-      counts: [150, 205, 150, 90, 100, 150, 100],
-    },
-    BTech: { labels: ["CSBS", "AI&DS", "IT"], counts: [70, 80, 65] },
-    ME: {
-      labels: ["VLSI", "Structural", "Thermal", "Machine Design"],
-      counts: [40, 44, 38, 51],
-    },
-  },
-  2024: {
-    BE: { labels: [], counts: [] },
-    BTech: { labels: ["AI&DS"], counts: [50] },
-    ME: { labels: ["Thermal"], counts: [45] },
-  },
-};
-
-const years = Object.keys(allData).sort();
 function useBarThickness() {
-  const [thickness, setThickness] = useState(50); // default for desktop
+  const [thickness, setThickness] = useState(50);
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth < 640) {
-        setThickness(20); // mobile
-      } else if (window.innerWidth < 1024) {
-        setThickness(40); // tablet
-      } else {
-        setThickness(50); // laptop/desktop
-      }
+      if (window.innerWidth < 640) setThickness(20);
+      else if (window.innerWidth < 1024) setThickness(40);
+      else setThickness(50);
     }
 
-    handleResize(); // set on mount
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return thickness;
 }
+
 function DashboardBarGraph() {
   const currentYear = new Date().getFullYear().toString();
-  const [department, setDepartment] = useState("BE");
+  const [department, setDepartment] = useState("B.E"); // use "B.Tech" matching preferredCourse prefix
   const [year, setYear] = useState(currentYear);
+  const [allData, setAllData] = useState({});
   const barThickness = useBarThickness();
-  const yearData = allData[year]?.[department];
 
-  const hasData = yearData && yearData.labels.length > 0;
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard/yearly-department-counts`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAllData(data);
+        if (!data[currentYear]) {
+          const firstYear = Object.keys(data)[0];
+          if (firstYear) setYear(firstYear);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching department data", err);
+        setAllData({});
+      });
+  }, []);
+
+  const years = Object.keys(allData).sort();
+
+  const yearDataObj = allData[year]?.[department] || {};
+
+  const labels = Object.keys(yearDataObj);
+  const counts = Object.values(yearDataObj);
+
+  const hasData = labels.length > 0;
 
   const data = hasData
     ? {
-        labels: yearData.labels,
+        labels,
         datasets: [
           {
             label: `${department} Student Count`,
-            data: yearData.counts,
+            data: counts,
             backgroundColor: "#0b56a4",
             borderRadius: 10,
             barThickness,
@@ -102,28 +90,19 @@ function DashboardBarGraph() {
       },
     },
     scales: {
-      x: {
-        grid: {
-          display: false,
-        },
-      },
+      x: { grid: { display: false } },
       y: {
         beginAtZero: true,
-        grid: {
-          color: "#d1d5db",
-          borderDash: [6, 6],
-        },
+        grid: { color: "#d1d5db", borderDash: [6, 6] },
       },
     },
   };
 
   return (
-    <div className="bg-white p-6 px-6 rounded-xl w-[100%] shadow-lg ">
+    <div className="bg-white p-6 px-6 rounded-xl w-[100%] shadow-lg">
       <div className="md:flex justify-between items-center mb-4">
-        <h2 className="playfair text-xl font-bold text-[#282526]">
-          No of Students per Department
-        </h2>
-        <div className=" flex gap-4 mt-3 md:mt-0">
+        <h2 className="playfair text-xl font-bold text-[#282526]">No of Students per Department</h2>
+        <div className="flex gap-4 mt-3 md:mt-0">
           <select
             className="border border-gray-300 text-[#282526] font-semibold rounded-lg p-1 px-2 outline-none"
             value={year}
@@ -137,13 +116,13 @@ function DashboardBarGraph() {
           </select>
 
           <select
-            className="border border-gray-300 text-[#282526] font-semibold rounded-lg  p-1 px-2 outline-none"
+            className="border border-gray-300 text-[#282526] font-semibold rounded-lg p-1 px-2 outline-none"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           >
-            <option value="BE">BE</option>
-            <option value="BTech">BTech</option>
-            <option value="ME">ME</option>
+            <option value="B.E">B.E</option>
+            <option value="B.Tech">B.Tech</option> {/* <-- Corrected */}
+            <option value="M.E">M.E</option>
           </select>
         </div>
       </div>

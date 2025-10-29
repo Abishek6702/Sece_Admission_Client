@@ -10,6 +10,8 @@ import bg1 from "../../assets/bg-1.png";
 import bg2 from "../../assets/bg-2.png";
 import bg3 from "../../assets/bg-3.png";
 import bg4 from "../../assets/bg1.png";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const CardDesign = ({ iconBg, icon, title, count, bgImage }) => {
   return (
@@ -46,31 +48,53 @@ const CardDesign = ({ iconBg, icon, title, count, bgImage }) => {
 };
 
 const CardSet = () => {
+  const [counts, setCounts] = useState({
+    totalEnquiries: 0,
+    totalApplications: 0,
+    governmentQuota: 0,
+    managementQuota: 0,
+  });
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard/counts`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCounts({
+          totalEnquiries: data.totalEnquiries,
+          totalApplications: data.totalApplications,
+          governmentQuota: data.governmentQuota,
+          managementQuota: data.managementQuota,
+        });
+      })
+      .catch((err) => {
+        console.error("Error fetching dashboard counts:", err);
+      });
+  }, []);
   const cardsData = [
     {
       title: "Total Enquiries",
-      count: 35,
+      count: counts.totalEnquiries,
       icon: <ClipboardList size={20} className="text-[#1c3b57]" />,
       iconBg: "bg-[#ffffff]",
       bg_img: bg4,
     },
     {
       title: "Total Applications",
-      count: 50,
+      count: counts.totalApplications,
       icon: <BookOpen size={20} className="text-orange-600" />,
       iconBg: "bg-[#ffffff]",
       bg_img: bg3,
     },
     {
       title: "Government Quota",
-      count: 120,
+      count: counts.governmentQuota,
       icon: <Users size={20} className="text-green-600" />,
       iconBg: "bg-[#ffffff]",
       bg_img: bg2,
     },
     {
       title: "Management Quota",
-      count: 80,
+      count: counts.managementQuota,
       icon: <BarChart3 size={20} className="text-violet-600" />,
       iconBg: "bg-[#ffffff]",
       bg_img: bg1,
