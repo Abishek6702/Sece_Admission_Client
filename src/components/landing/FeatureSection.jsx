@@ -3,7 +3,7 @@ import React from "react";
 import { motion } from "framer-motion"; // ✅ Import framer-motion
 import grid from "../../assets/Grid.svg";
 import union from "../../assets/Union.svg";
-import Form from "../../assets/Form.svg";
+// import Form from "../../assets/Form.svg";
 import First from "../../assets/first.svg";
 import Second from "../../assets/second.svg";
 import Third from "../../assets/third.svg";

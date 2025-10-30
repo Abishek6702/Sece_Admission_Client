@@ -2,7 +2,7 @@ import { MoveUpRight } from "lucide-react";
 import React from "react";
 import grid from "../../assets/Grid.svg";
 import union from "../../assets/Union1.svg";
-import Form from "../../assets/Form.svg";
+// import Form from "../../assets/Form.svg";
 import sport from "../../assets/sport.svg";
 import feature from "../../assets/feature.svg";
 import about from "../../assets/about1.svg";

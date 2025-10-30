@@ -2,7 +2,7 @@ import { MoveUpRight, X } from "lucide-react";
 import React, { useState } from "react";
 import grid from "../../assets/Grid.svg";
 import union from "../../assets/Union.svg";
-import Form from "../../assets/Form.svg";
+import Form from "../../assets/form.svg";
 import { useNavigate } from "react-router-dom";
 
 import hero from "../../assets/hero.svg";
